@@ -221,5 +221,3 @@ http://localhost:3000
 * Add authentication flow details
 * Add database schema documentation
 * Add deployment instructions
-
-```
