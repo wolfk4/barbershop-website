@@ -1,4 +1,3 @@
-````md
 # Barbershop Website
 
 A Next.js App Router project for a barbershop website with public pages, shop functionality, admin pages, and API routes.
