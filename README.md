@@ -223,6 +223,3 @@ http://localhost:3000
 * Add deployment instructions
 
 ```
-
-I can also make this more professional and tailored for GitHub with setup, env variables, and feature sections.
-```
