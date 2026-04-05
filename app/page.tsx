@@ -2,11 +2,16 @@
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
-
 export default function Home() {
   return (
     <div>
       <Header />
+
+      {/*Hero Image Section*/}
+      <HomePage />
+
+
+      {/*Main content*/}
       <div className="w-full h-full bg-gray-100 dark:bg-black flex flex-col items-center justify-center gap-4 p-4">
         <h2 className="text-3xl">
       Kaizen Cutz

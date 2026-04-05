@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -125,5 +126,9 @@
   }
   html {
     @apply font-sans;
+  }
+  /* Add Inter font utility */
+  .font-inter {
+    font-family: 'Inter', sans-serif;
   }
 }
