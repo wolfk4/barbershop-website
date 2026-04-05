@@ -13,8 +13,8 @@ export default function HomePage() {
         <Image
           src="/hero.webp"
           alt="Kaizen Cuts barbershop storefront"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{ objectFit: "cover" }}
           priority
         />
       </div>

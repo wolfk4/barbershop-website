@@ -1,7 +1,9 @@
 
 import Footer from "@/components/footer";
 import Header from "@/components/header";
+import HomePage from "@/components/HomePage";
 import { Button } from "@/components/ui/button";
+
 export default function Home() {
   return (
     <div>
