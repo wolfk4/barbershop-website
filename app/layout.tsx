@@ -25,7 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${mono.variable} antialiased`}>
-        {children}
+        <main className="pb-12">
+          {children}
+        </main>
       </body>
     </html>
   );

@@ -23,7 +23,7 @@ export default function HomePage() {
       <div
         className="w-full flex items-center justify-center"
         style={{
-          backgroundColor: "#FF3B30", // Vibrant red color
+          backgroundColor: "black", // Vibrant red color
           height: "80px", 
         }}
       >

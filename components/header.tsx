@@ -4,7 +4,7 @@ import { ShoppingCart, Menu } from "lucide-react";
 
 function Header() {
   return (
-    <header className="w-full h-16 bg-gray-800 text-white flex items-center justify-between px-4">
+    <header className="w-full h-16 bg-black text-white flex items-center justify-between px-4">
       <div className="flex items-center gap-4">
         <Image src="/KClogo.png" alt="logo" width={50} height={50} />
       </div>
@@ -19,7 +19,7 @@ function Header() {
           <Menu className="h-6 w-6" />
         </button>
         <Link href="/book" 
-          className="border border-white px-4 py-1 text-sm font-bold uppercase tracking-wide"> 
+          className="bg-white text-black px-3 py-1 text-xs font-bold uppercase tracking-wide rounded-md shadow-md"> 
           Book Now 
         </Link>
       </div>
