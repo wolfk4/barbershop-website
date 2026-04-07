@@ -7,15 +7,15 @@ export default function HomePage() {
   };
 
   return (
-    <div>
+    <main className="w-full">
       {/* Hero Image Section */}
-      <div className="relative mx-auto" style={{ paddingTop: "40.00%" }}>
+      <div className="relative mx-auto w-full h-200">
         <Image
           src="/hero.webp"
           alt="Kaizen Cuts barbershop storefront"
           fill
-          style={{ objectFit: "cover" }}
           priority
+          className="object-cover"
         />
       </div>
 
@@ -34,6 +34,6 @@ export default function HomePage() {
           </a>
           </p>
       </div>
-    </div>
+    </main>
   );
 }

@@ -4,13 +4,15 @@ import { ShoppingCart, Menu } from "lucide-react";
 
 function Header() {
   return (
-    <header className="w-full h-16 bg-black text-white flex items-center justify-between px-4">
+    <header className="w-full bg-black text-white flex items-center justify-between px-4 py-6">
       <div className="flex items-center gap-4">
-        <Image src="/KClogo.png" alt="logo" width={50} height={50} />
+        <Link href="/">
+          <Image src="/KClogo.png" alt="logo" width={50} height={50} />
+        </Link>
       </div>
-
-      <h1 className="text-2xl font-extrabold tracking-widest uppercase"> Kaizen Cutz </h1>
-
+      <Link href="/">
+        <h1 className="text-2xl font-extrabold tracking-widest uppercase"> Kaizen Cutz </h1>
+      </Link>
       <div className="flex items-center gap-3 w-32 justify-end">
         <Link href="/cart">
           <ShoppingCart className="h-6 w-6" />
