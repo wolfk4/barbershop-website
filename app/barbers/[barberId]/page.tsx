@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { BookNowButton } from "@/components/ui/BookNowButton"; 
 
 export default async function BarberPage({ params }: { params: {barberId: string } }){
     const { barberId } = await params;
@@ -49,8 +50,14 @@ export default async function BarberPage({ params }: { params: {barberId: string
                                 {line}
                             </p>
                         ))}
+
+                         {/* Book Now Button */}
+                        <div className="mt-6">
+                            <BookNowButton booksyUrl={barberData.booksyUrl} />
+                        </div>
                     </div>
                 </div>
+                    
                 {/* Right Section: Portfolio Grid */}
                 <div className="grid grid-cols-3 gap-4 w-full sm:w-1/2 sm:ml-24">
                     {barberData.portfolio.map((image: string, index: number) => (

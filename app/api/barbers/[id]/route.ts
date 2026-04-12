@@ -14,6 +14,7 @@ const mockBarbers = [
             "/portfolio/cut5.jpeg",
             "/portfolio/cut6.jpeg",
         ],
+        booksyUrl: "https://booksy.com/en-us/385969_p-da-barber_barber-shop_100342_citrus-heights#ba_s=seo",
     },
 ];
 
