@@ -27,7 +27,7 @@ export default function HomePage() {
           height: "80px", 
         }}
       >
-        <p className="text-white text-lg sm:text-2xl md:text-3xl font-black font-inter text-center px-4">
+        <p className="text-white text-lg sm:text-xl md:text-xl font-black font-inter text-center px-4">
         {shopConfig.address} <span className="mx-2">•</span>
           <a href={`tel:${shopConfig.phone}`} className="hover:underline">
             {shopConfig.phone}
