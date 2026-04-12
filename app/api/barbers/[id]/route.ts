@@ -6,6 +6,14 @@ const mockBarbers = [
         name: "P. Da Barber",
         bio: "P is a skilled barber who specializes in clean\nfades, classic cuts, and precise beard work.\nHe's detail-oriented, friendly, and focused on\nmaking every client look and feel their best.",
         heroImage: "/barber-hero.jpg",
+        portfolio: [
+            "/portfolio/cut1.jpeg",
+            "/portfolio/cut2.jpeg",
+            "/portfolio/cut3.jpeg",
+            "/portfolio/cut4.jpeg",
+            "/portfolio/cut5.jpeg",
+            "/portfolio/cut6.jpeg",
+        ],
     },
 ];
 

@@ -27,16 +27,15 @@ export default async function BarberPage({ params }: { params: {barberId: string
     return (
         <>
             <Header />
-            <main className="w-full flex flex-col items-center p-4 sm:py-16">
-                {/* Hero Image and Text */}
-                <div className="flex flex-col items-center w-full max-w-[552px]">
+            <main className="w-full flex flex-col sm:flex-row items-start p-4 sm:py-16">                {/* Hero Image and Text */}
+                <div className="flex flex-col items-center w-full max-w-[552px] pl-16">
                     {/* Hero Image */}
                     <div className="relative w-full">
                         <Image
                             src={barberData.heroImage}
                             alt={`${barberData.name}'s hero image`}
-                            width={552}
-                            height={607}
+                            width={488}
+                            height={567.46}
                             priority
                             className="object-cover rounded-lg"
                         />
@@ -52,6 +51,24 @@ export default async function BarberPage({ params }: { params: {barberId: string
                         ))}
                     </div>
                 </div>
+                {/* Right Section: Portfolio Grid */}
+                <div className="grid grid-cols-3 gap-4 w-full sm:w-1/2 sm:ml-24">
+                    {barberData.portfolio.map((image: string, index: number) => (
+                        <div
+                            key={index}
+                            className="relative w-full h-[275.73px]" // Custom height for each grid item
+                        >
+                            <Image
+                                src={image}
+                                alt={`cut${index + 1}`}
+                                layout="fill"
+                                objectFit="cover"
+                                className="rounded-lg"
+                            />
+                        </div>
+                    ))}
+                </div>
+
             </main>
             <Footer />
         </>
