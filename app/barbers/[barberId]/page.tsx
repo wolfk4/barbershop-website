@@ -27,17 +27,30 @@ export default async function BarberPage({ params }: { params: {barberId: string
     return (
         <>
             <Header />
-            <main className="w-full">
-                {/* Hero Image */}
-                <div className="relative w-full max-w-[552px] p-4 py-8 sm:py-16 sm:mx-auto md:ml-24 md:mt-8">
-                    <Image
-                        src={barberData.heroImage}
-                        alt={`${barberData.name}'s hero image`}
-                        width={552}
-                        height={607}
-                        priority
-                        className="object-cover rounded-lg"
-                    />
+            <main className="w-full flex flex-col items-center p-4 sm:py-16">
+                {/* Hero Image and Text */}
+                <div className="flex flex-col items-center w-full max-w-[552px]">
+                    {/* Hero Image */}
+                    <div className="relative w-full">
+                        <Image
+                            src={barberData.heroImage}
+                            alt={`${barberData.name}'s hero image`}
+                            width={552}
+                            height={607}
+                            priority
+                            className="object-cover rounded-lg"
+                        />
+                    </div>
+
+                    {/* Barber Name and Bio */}
+                    <div className="text-center mt-8">
+                        <h1 className="text-5xl font-bold mb-4">{barberData.name}</h1>
+                        {barberData.bio.split("\n").map((line: string, index: number) => (
+                            <p key={index} className="text-2xl text-gray-700 font-bold leading-snug">
+                                {line}
+                            </p>
+                        ))}
+                    </div>
                 </div>
             </main>
             <Footer />
