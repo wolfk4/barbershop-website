@@ -2,6 +2,7 @@
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import HomePage from "@/components/HomePage";
+import ShopHours from "@/components/shop-hours";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
@@ -15,7 +16,7 @@ export default function Home() {
 
       {/*Main content*/}
       <div className="w-full h-full bg-gray-100 dark:bg-black flex flex-col items-center justify-center gap-4 p-4">
-        <h2 className="text-3xl">
+        <h2 className="text-4xl">
       Kaizen Cutz
       </h2>
       <div className="max-w-1/2 text-center">
@@ -30,6 +31,7 @@ export default function Home() {
       </Button>
       </div>
       </div>
+      <ShopHours/>
       <Footer/>
     </div>
 
