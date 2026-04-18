@@ -49,7 +49,7 @@ function Header() {
                 </div>
               </div>
             )}
-        <Link href="/book" 
+        <Link href="/scheduling" 
           className="bg-white text-black px-3 py-1 text-xs font-bold uppercase tracking-wide rounded-md shadow-md"> 
           Book Now 
         </Link>

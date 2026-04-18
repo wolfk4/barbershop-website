@@ -22,8 +22,8 @@ export default function Home() {
       <p className="text-md">Precision cuts and esthetic treatments tailored for clients who care about detail, consistency, and a refined experience. Every service is focused on clean results, modern style, and a comfortable, elevated environment in Sacramento.</p>
       </div>
       <div className="flex gap-2">
-      <Button>
-        Book Now
+      <Button asChild>
+        <Link href="/scheduling">Book Now</Link>
       </Button>
       <Button variant={"outline"} className="shadow-md">
         View Services
