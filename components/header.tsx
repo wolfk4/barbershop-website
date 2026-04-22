@@ -13,10 +13,10 @@ function Header() {
   };
 
   return (
-    <header className="w-full bg-black text-white flex items-center justify-between px-4 py-6">
-      <div className="flex items-center gap-4">
+    <header className="w-full bg-black text-white flex items-center justify-between px-4 py-4">
+      <div className="flex items-center gap-4 w-32">
         <Link href="/">
-          <Image src="/KClogo.png" alt="logo" width={50} height={50} />
+          <Image src="/KClogo.png" alt="logo" width={70} height={50} />
         </Link>
       </div>
       <Link href="/">

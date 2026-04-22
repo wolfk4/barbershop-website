@@ -1,4 +1,4 @@
-xport type Barber = {
+export type Barber = {
   slug: string;
   name: string;
   title: string;

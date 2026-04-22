@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-//import { barbers } from "@/lib/barbers";
+import { barbers } from "@/lib/barbers";
  
 export const metadata = {
   title: "Meet the Team | Kaizen Cutz",
@@ -13,8 +13,8 @@ export default function MeetTheTeamPage() {
     <div className="bg-[#f0f0f0] min-h-screen">
       <Header />
  
-      <main className="flex flex-col items-center py-16 px-6">
-        <h1 className="text-3xl font-bold underline mb-12">Meet the Team</h1>
+      <main className="flex flex-col items-center py-16">
+        <h1 className="text-4xl font-bold underline mb-12 tracking-wide w-full text-center">Meet the Team</h1>
  
         <div className="flex flex-wrap justify-center gap-15">
           {barbers.map((barber) => (
