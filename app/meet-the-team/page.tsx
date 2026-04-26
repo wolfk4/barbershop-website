@@ -1,29 +1,33 @@
-import Link from "next/link";
-import Image from "next/image";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
-import { barbers } from "@/lib/barbers";
- 
+import Link from "next/link"
+import Image from "next/image"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
+import { getAllBarbers } from "@/lib/barbers"
+
 export const metadata = {
   title: "Meet the Team | Kaizen Cutz",
-};
- 
-export default function MeetTheTeamPage() {
+}
+
+export const revalidate = 60
+
+export default async function MeetTheTeamPage() {
+  const barbers = await getAllBarbers()
+
   return (
     <div className="bg-[#f0f0f0] min-h-screen">
       <Header />
- 
+
       <main className="flex flex-col items-center py-16">
         <h1 className="text-4xl font-bold underline mb-12 tracking-wide w-full text-center">Meet the Team</h1>
- 
-        <div className="flex flex-wrap justify-center gap-15">
+
+        <div className="flex flex-wrap justify-center gap-10">
           {barbers.map((barber) => (
             <Link
               key={barber.slug}
               href={`/barbers/${barber.slug}`}
-              className="flex flex-col items-center gap-2"
+              className="flex flex-col items-center gap-2 group"
             >
-              <div className="relative w-48 h-60 rounded-2xl overflow-hidden bg-gray-300">
+              <div className="relative w-48 h-60 rounded-2xl overflow-hidden bg-gray-200 group-hover:opacity-90 transition-opacity">
                 {barber.image ? (
                   <Image
                     src={barber.image}
@@ -45,8 +49,8 @@ export default function MeetTheTeamPage() {
           ))}
         </div>
       </main>
- 
+
       <Footer />
     </div>
-  );
+  )
 }

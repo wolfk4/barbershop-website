@@ -1,43 +1,32 @@
-export type Barber = {
-  slug: string;
-  name: string;
-  title: string;
-  image: string; // placeholder until real images are added
-  bio: string;
-  specialties: string[];
-  instagram?: string;
-};
- 
-export const barbers: Barber[] = [
-  {
-    slug: "p-da-barber",
-    name: "P. Da Barber",
-    title: "Master Barber",
-    image: "", // import image here
-    bio: "NA",
-    specialties: ["Fades", "Skin Fades", "Beard Trims"],
-    instagram: "",
-  },
-  {
-    slug: "isifadez",
-    name: "IsiFadez",
-    title: "Barber",
-    image: "",
-    bio: "NA.",
-    specialties: ["Fades", "Lineups", "Tapers"],
-    instagram: "",
-  },
-  {
-    slug: "kevin",
-    name: "Kevin",
-    title: "Barber",
-    image: "",
-    bio: "NA",
-    specialties: ["Fades", "Beard Grooming", "Styling"],
-    instagram: "",
-  },
-];
- 
-export function getBarberBySlug(slug: string): Barber | undefined {
-  return barbers.find((b) => b.slug === slug);
+import { sql } from "@/lib/db"
+
+export type Barber = 
+{
+  id: number
+  slug: string
+  name: string
+  title: string
+  bio: string
+  image: string | null
+  gallery: string[]
+  specialties: string[]
+  booking_url: string | null
+}
+
+export async function getAllBarbers() 
+{
+  const data = await sql`SELECT * FROM barbers ORDER BY created_at ASC`
+  return data as Barber[]
+}
+
+export async function getBarberBySlug(slug: string) 
+{
+  const data = await sql`SELECT * FROM barbers WHERE slug = ${slug} LIMIT 1`
+  return data[0] as Barber | undefined
+}
+
+export async function getAllBarberSlugs() 
+{
+  const data = await sql`SELECT slug FROM barbers`
+  return data as { slug: string }[]
 }
