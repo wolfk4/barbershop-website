@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 
-function Footer(): React.JSX.Element {
+function Footer(){
   return (
     <footer className="w-full bg-white border-t border-gray-200 py-4 px-8">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-start gap-10">

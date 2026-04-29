@@ -2,16 +2,17 @@ import Link from "next/link"
 import Image from "next/image"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
-import { getAllBarbers } from "@/lib/barbers"
+import { db } from "@/db/drizzle"
+import { barbers } from "@/db/schema"
 
 export const metadata = {
   title: "Meet the Team | Kaizen Cutz",
 }
 
-export const revalidate = 60
-
 export default async function MeetTheTeamPage() {
-  const barbers = await getAllBarbers()
+  const barbers2 = await db.select().from(barbers)
+
+
 
   return (
     <div className="bg-[#f0f0f0] min-h-screen">
@@ -21,10 +22,10 @@ export default async function MeetTheTeamPage() {
         <h1 className="text-4xl font-bold underline mb-12 tracking-wide w-full text-center">Meet the Team</h1>
 
         <div className="flex flex-wrap justify-center gap-10">
-          {barbers.map((barber) => (
+          {barbers2.map((barber) => (
             <Link
-              key={barber.slug}
-              href={`/barbers/${barber.slug}`}
+              key={barber.id}
+              href={`/barbers/${barber.id}`}
               className="flex flex-col items-center gap-2 group"
             >
               <div className="relative w-48 h-60 rounded-2xl overflow-hidden bg-gray-200 group-hover:opacity-90 transition-opacity">

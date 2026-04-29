@@ -8,7 +8,7 @@ function page() {
   return (
     <div>
         <Header />
-            <h2> Buy Our Merch</h2>
+            <h2> </h2>
         <Footer />
     </div>
   )
