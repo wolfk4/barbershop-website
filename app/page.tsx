@@ -4,6 +4,7 @@ import Header from "@/components/header";
 import HomePage from "@/components/HomePage";
 import ShopHours from "@/components/shop-hours";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
   return (
