@@ -10,6 +10,7 @@ export const metadata = {
 }
 
 export default async function MeetTheTeamPage() {
+  // TODO: SHIFT TO API
   const barbers2 = await db.select().from(barbers)
 
 
