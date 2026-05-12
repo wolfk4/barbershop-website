@@ -1,3 +1,4 @@
+
 # Barbershop Website
 
 A Next.js App Router project for a barbershop website with public pages, shop functionality, admin pages, and API routes.
@@ -14,6 +15,8 @@ Possible use:
 - Featured products
 - Booking call to action
 - Testimonials
+  
+<img width="2551" height="1263" alt="Screenshot 2026-05-12 161918" src="https://github.com/user-attachments/assets/382b8c60-f411-4aee-9aa7-1ae705d13110" />
 
 ---
 
@@ -26,6 +29,7 @@ Possible content:
 - Team or barbers
 - Mission and values
 - Shop experience
+
 
 ---
 
@@ -71,6 +75,10 @@ Possible content:
 - Business hours
 - Map embed
 
+<img width="2553" height="1261" alt="Screenshot 2026-05-12 161745" src="https://github.com/user-attachments/assets/b82cca02-341e-44d8-92ab-c880416ff260" />
+
+
+
 ---
 
 ### `/shop`
@@ -82,6 +90,10 @@ Possible use:
 - Product categories
 - Shopping cart integration
 - Checkout flow
+
+<img width="2542" height="1247" alt="Screenshot 2026-05-12 161946" src="https://github.com/user-attachments/assets/23979983-3756-49f9-a8de-94851f7ca8d6" />
+
+
 
 ---
 
