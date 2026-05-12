@@ -15,6 +15,13 @@
       "when": 1777421918076,
       "tag": "0001_sturdy_beyonder",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1777492837407,
+      "tag": "0002_breezy_sentry",
+      "breakpoints": true
     }
   ]
 }

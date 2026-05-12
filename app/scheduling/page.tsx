@@ -2,6 +2,7 @@
 
 // app/scheduling/page.tsx
 import { Button } from "@/components/ui/button";
+import { Link } from "lucide-react";
 
 export default function SchedulingPage() {
   const handleScheduleClick = () => {
@@ -13,9 +14,11 @@ export default function SchedulingPage() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-black">
       <h1 className="text-4xl font-bold mb-8">Schedule Your Appointment</h1>
       <p className="text-lg mb-8">Click the button below to book your appointment through Booksy.</p>
-      <Button onClick={handleScheduleClick} size="lg">
-        Schedule
-      </Button>
+      <a href="https://booksy.com/en-us/974082_kaizen-cutz_barber-shop_100342_citrus-heights#ba_s=seo" target="_blank">
+          <Button>
+            Schedule
+          </Button>
+      </a>
     </div>
   );
 }
