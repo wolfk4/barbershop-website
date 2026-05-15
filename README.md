@@ -1,4 +1,4 @@
-<img width="400" alt="KC logo" src="https://github.com/user-attachments/assets/f537c282-1732-46e5-aa78-5c453d9d0beb" />
+<img width="800" alt="KC logo" src="https://github.com/user-attachments/assets/f537c282-1732-46e5-aa78-5c453d9d0beb" />
 
 # Kaizen Cutz Barbershop Website
 
