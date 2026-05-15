@@ -1,7 +1,12 @@
 
-# Barbershop Website
+# Kaizen Cutz Barbershop Website
 
-A Next.js App Router project for a barbershop website with public pages, shop functionality, admin pages, and API routes.
+A website built for Kaizen Cutz, a barbershop in Citrus Heights, CA. The site features individual barber profile pages, an online product shop, and online appointment booking so clients don't have to call.
+Built with Next.js and Tailwind CSS, backed by a PostgreSQL database hosted on Neon.
+
+## What this project is about
+ 
+Most people looking for a haircut these days just open Booksy, which puts individual barbers in front of clients instead of the shops they work at. If you search "barbers in Sacramento" your top results are either Booksy listings or a barbershop website, so if your shop doesn't have a website you basically don't show up. The goal of this project was to fix that for Kaizen Cutz by giving them a real online presence, give each barber a page to show their work, and let clients book online.
 
 ## Routes
 
@@ -156,13 +161,17 @@ Examples:
 ### `db/`
 
 Database related logic and configuration.
+ 
+We're using Neon (PostgreSQL) and connecting through the `@neondatabase/serverless` package. The connection string lives in `.env.local` and never gets pushed to GitHub.
+ 
+Tables we have so far:
+- `barbers` — name, slug, bio, image, gallery, specialties
+- `admins` — email, password hash, role
 
-Possible contents:
+Still need to add: `products`, `orders`, `bookings`.
 
-* Database connection
-* Schema definitions
-* Queries
-* ORM setup
+### ERD
+![ERD](public/ERD.png)
 
 ### `lib/`
 
@@ -216,20 +225,52 @@ Static assets such as:
 To run the project locally:
 
 ```bash
+git clone https://github.com/wolfk4/barbershop-website.git
+cd barbershop-website
 npm install
+```
+ 
+Then make a `.env.local` file in the root with:
+```
+DATABASE_URL=your_neon_connection_string
+AUTH_SECRET=your_auth_secret
+```
+ 
+Then:
+```bash
 npm run dev
 ```
 
-Then open:
+Then open: http://localhost:3000
 
-```bash
-http://localhost:3000
-```
+ 
+## Testing
+ 
+TODO — we'll be doing this in CSC 191. The plan is unit tests for the helper functions in `lib/`, integration tests for the API routes, and end-to-end tests for the booking and admin flows.
+
+## Deployment
+ 
+TODO — also CSC 191. We're planning to deploy the frontend to Vercel and keep the database on Neon. Environment variables will be managed through Vercel.
+
+## Timeline for 191
+
+Based on the user stories in our JIRA, here's roughly what we want to get done next semester:
+
+| Week | What |
+|------|------|
+| 2 | Scheduling plugin integrated into barber pages |
+| 2 | Employee dashboard so barbers can upload their own bio, photo, and gallery |
+| 4 | Admin login with hashed passwords and session handling |
+| 4 | Admin dashboard for managing barbers |
+| 6 | Shop page with product listings, cart, and checkout |
+| 8 | Tests |
+| 8 | Deploy to Vercel |
+| 10 | Final touches |
 
 ## Future Improvements
 
-* Add route level descriptions for nested routes
-* Document API endpoints inside `app/api`
-* Add authentication flow details
-* Add database schema documentation
-* Add deployment instructions
+- Add route level descriptions for nested routes
+- Document API endpoints inside `app/api`
+- Add authentication flow details
+- Add database schema documentation
+- Add deployment instructions
