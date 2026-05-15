@@ -171,7 +171,8 @@ Tables we have so far:
 Still need to add: `products`, `orders`, `bookings`.
 
 ### ERD
-![ERD](public/ERD.png)
+
+<img width="1154" height="584" alt="ERD" src="https://github.com/user-attachments/assets/6eba23b4-f0e8-457c-9676-48f356590ea5" />
 
 ### `lib/`
 
