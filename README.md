@@ -83,7 +83,6 @@ Possible content:
 <img width="2553" height="1261" alt="Screenshot 2026-05-12 161745" src="https://github.com/user-attachments/assets/b82cca02-341e-44d8-92ab-c880416ff260" />
 
 
-
 ---
 
 ### `/shop`
@@ -97,7 +96,6 @@ Possible use:
 - Checkout flow
 
 <img width="2542" height="1247" alt="Screenshot 2026-05-12 161946" src="https://github.com/user-attachments/assets/23979983-3756-49f9-a8de-94851f7ca8d6" />
-
 
 
 ---
@@ -121,7 +119,7 @@ db/
 lib/
 public/
 auth.ts
-````
+```
 
 ## Important Files
 
@@ -174,6 +172,7 @@ Still need to add: `products`, `orders`, `bookings`.
 
 <img width="1154" height="584" alt="ERD" src="https://github.com/user-attachments/assets/6eba23b4-f0e8-457c-9676-48f356590ea5" />
 
+
 ### `lib/`
 
 Utility functions and shared helpers.
@@ -199,9 +198,9 @@ Static assets such as:
 
 * **Next.js** with App Router
 * **TypeScript**
-* **CSS** via `globals.css`
-* Possible authentication through `auth.ts`
-* Possible database integration through `db/`
+* **CSS** via `Tailwind CSS`
+* Auth.js for authentication
+* PostgreSQL on Neon for the database
 
 ## Notes
 
