@@ -1,5 +1,4 @@
-<img width="1170" height="878" alt="KC logo" src="https://github.com/user-attachments/assets/f537c282-1732-46e5-aa78-5c453d9d0beb" />
-
+<img width="200" alt="KC logo" src="https://github.com/user-attachments/assets/f537c282-1732-46e5-aa78-5c453d9d0beb" />
 # Kaizen Cutz Barbershop Website
 
 A website built for Kaizen Cutz, a barbershop in Citrus Heights, CA. The site features individual barber profile pages, an online product shop, and online appointment booking so clients don't have to call.
