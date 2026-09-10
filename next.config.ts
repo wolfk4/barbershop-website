@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
     images: {
-    domains: ['www.vets4pets.com'],
+    domains: ['www.vets4pets.com', 'www.prada.com'],
   },
     typescript: {
     ignoreBuildErrors: true,

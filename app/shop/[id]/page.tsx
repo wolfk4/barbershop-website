@@ -4,23 +4,35 @@ import Link from "next/link";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { db } from "@/db/drizzle";
-import { barbers } from "@/db/schema";
+import { shopItems } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { AddToCartButton } from "@/components/cart-btn";
+
 
  
-export default async function BarberBioPage({ params }: { params: { id: number } }) {
-  const { id } = await params
- 
+export default async function ProductPage({ params }: { params: { id: any } }) {
+
+  const { id } = await params;
+
+
+  const [ item ] = await db.select().from(shopItems).where(eq(shopItems.id, id)).limit(1);
+    if(!item) {
+    notFound();
+  }
+  
+
+
   return (
     <div className="bg-[#f0f0f0] min-h-screen">
       <Header />
  
-      <main className="flex flex-col items-center py-16 px-6">
+      <div className="flex flex-col items-center py-16 px-6">
         <div className="w-full max-w-lg">
-          <h3>Product Page</h3>
-          <Image src="/tshirt.jpg" alt="Product" width={400} height={400} />
+          <h3>{item?.title || "Product not found"}</h3>
+          <Image src={item.image || "/shirt.jpg"} alt={item?.title} width={400} height={400} />
+          <AddToCartButton itemId={item.id} />
         </div>
-      </main>
+      </div>
        <Footer />
     </div>
   );

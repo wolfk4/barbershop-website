@@ -90,14 +90,6 @@ useEffect(() => {
 
               <p className="text-2xl font-bold">${item.price.toFixed(2)}</p>
             </CardContent>
-
-            <CardFooter>
-              <Link href={`/shop/${item.id}`}>
-                <Button className="w-full">
-                  View Details
-                </Button>
-              </Link>
-            </CardFooter>
           </Card>
           </Link>
           ))}

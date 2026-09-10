@@ -23,7 +23,7 @@ function Header() {
         <h1 className="text-2xl font-extrabold tracking-widest uppercase"> Kaizen Cutz </h1>
       </Link>
       <div className="flex items-center gap-3 w-32 justify-end">
-        <Link href="/shop">
+        <Link href="/shop/cart">
           <ShoppingCart className="h-6 w-6" />
         </Link>
             <div
@@ -46,7 +46,7 @@ function Header() {
                   <Link href="/about-us" className="block hover:underline">
                     About Us
                   </Link>
-                  <Link href="/shop" className="block hover:underline">
+                  <Link href="/shop/cart" className="block hover:underline">
                     Shop
                   </Link>
                 </div>

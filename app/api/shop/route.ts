@@ -2,7 +2,6 @@
 
 import { db } from "@/db/drizzle";
 import { shopItems } from "@/db/schema";
-import { ShopItem } from "@/lib/types";
 
 
 export async function GET() {
