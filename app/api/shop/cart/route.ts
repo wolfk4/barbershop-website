@@ -1,6 +1,6 @@
 import { db } from "@/db/drizzle";
 import { cart, shopItems } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 
 
@@ -49,4 +49,30 @@ export const POST = async (request: Request) => {
             status: 500,
         });
     }
+  }
+
+
+
+export const DELETE = async (request: Request) => {
+
+  const userId = "7f3c2a91-5d84-4e17-9b63-2c8a6f104d75"; 
+  try {  
+      const body = await request.json()
+      const { itemId } = body
+ 
+      // deletes the matching row from cart  
+      await db.delete(cart).where(
+          and(eq(cart.productId, itemId), eq(cart.userId, userId)) 
+      );
+      return new Response("Item removed from cart", {
+          status: 200, 
+      });
+  }  
+  catch (error) {
+      console.error("Error removing item from cart:", error);
+      return new Response("Internal Server Error", {  
+          status: 500,
+      });
+  } 
 }
+

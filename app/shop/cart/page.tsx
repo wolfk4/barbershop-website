@@ -25,9 +25,29 @@ function Page() {
         console.error("Failed to fetch cart:", error)
       }
     }
-
     fetchItems()
   }, [])
+
+
+  const removeItem = async (productId: string) => {
+    try {
+    const response = await fetch("/api/shop/cart", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ itemId: productId }),
+    })
+
+    if (!response.ok) {
+      throw new Error("errorr removing item")
+    }
+
+    // removes the item
+    setItems(items.filter((item) => item.productId !== productId))
+  } catch (error) {
+    console.error("Unable to remove item:", error)
+  }
+}
+
 
 
   console.log("Cart items:", items)
@@ -161,6 +181,7 @@ function Page() {
                         type="button"
                         variant="ghost"
                         className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                        onClick={() => removeItem(item.productId)}
                       >
                         Remove
                       </Button>
@@ -208,9 +229,11 @@ function Page() {
                 </div>
               </div>
 
+              <Link href="/checkout">
               <Button className="w-full mt-6 h-12 text-base">
                 Proceed to Checkout
               </Button>
+              </Link>
 
               <p className="text-xs text-gray-500 text-center mt-4">
                 Taxes and shipping calculated at checkout.

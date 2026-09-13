@@ -7,6 +7,7 @@ import { db } from "@/db/drizzle";
 import { shopItems } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { AddToCartButton } from "@/components/cart-btn";
+import { ProductSizes } from "@/components/product-sizes";
 
 
  
@@ -30,7 +31,14 @@ export default async function ProductPage({ params }: { params: { id: any } }) {
         <div className="w-full max-w-lg">
           <h3>{item?.title || "Product not found"}</h3>
           <Image src={item.image || "/shirt.jpg"} alt={item?.title} width={400} height={400} />
-          <AddToCartButton itemId={item.id} />
+          <ProductSizes
+            itemId={item.id}
+            sizes={[
+              { size: "S", stock: 77 },
+              { size: "M", stock: 0 },
+              { size: "L", stock: 33 },
+            ]}
+/>
         </div>
       </div>
        <Footer />
