@@ -8,6 +8,9 @@ import Footer from "@/components/footer";
 //import { eq } from "drizzle-orm";
 import { AddToCartButton } from "@/components/cart-btn";
 
+/* For the time being, we will fetch the product data from the API route instead of directly from the database. This is a temporary solution until I can set up a proper database connection in the Next.js app.
+ */
+
 export default async function ProductPage({ params }: { params: { id: any } }) {
 
   const { id } = await params;
@@ -17,12 +20,16 @@ export default async function ProductPage({ params }: { params: { id: any } }) {
     notFound();
   }
 
-  const item = await response.json();
+  //Used for data base connection, but for now we will use the API route to fetch the product data.
 
-  /*const [ item ] = await db.select().from(shopItems).where(eq(shopItems.id, id)).limit(1);
+  /*
+  const [ item ] = await db.select().from(shopItems).where(eq(shopItems.id, id)).limit(1);
     if(!item) {
     notFound();
+
   }*/
+
+  const item = await response.json();
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f0f0f0]">
