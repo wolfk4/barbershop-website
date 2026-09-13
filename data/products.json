@@ -1,0 +1,9 @@
+[
+    {
+        "id": "t-shirt",
+        "name": "T-Shirt",
+        "image" : "/tshirt.jpg",
+        "description": "A comfortable and stylish t-shirt made from high-quality materials. Perfect for casual wear or as a gift. Available in various sizes and colors. Machine washable and durable for long-lasting use.",
+        "price": 19.99
+    }
+]
