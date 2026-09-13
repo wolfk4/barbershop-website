@@ -4,6 +4,8 @@
         "name": "T-Shirt",
         "image" : "/tshirt.jpg",
         "description": "A comfortable and stylish t-shirt made from high-quality materials. Perfect for casual wear or as a gift. Available in various sizes and colors. Machine washable and durable for long-lasting use.",
-        "price": 19.99
+        "price": 19.99,
+        "availabilitySizes": ["S", "M", "L", "XL", "2XL"],
+        "stockBySize": { "S": 10,"M": 0,"L": 5, "XL": 2,"2XL": 0}
     }
 ]
