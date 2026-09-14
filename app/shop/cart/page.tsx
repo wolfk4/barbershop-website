@@ -7,6 +7,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { CartItem} from "@/lib/types"
 
+
 function Page() {
   const [items, setItems] = useState<CartItem[]>([])
 
@@ -74,6 +75,23 @@ function Page() {
     0
   )
 
+const removeItem = async (itemId: string) => {
+  try {
+    const response = await fetch(`/api/shop/cart`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ itemId }),
+    });
+    if(response.ok) {
+      setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+    }
+  } catch (error) {
+    console.error("Failed to remove item from cart:", error)
+  }
+}
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
@@ -95,14 +113,14 @@ function Page() {
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
               <div
-                key={item.productId}
+                key={item.uid}
                 className="bg-white border rounded-2xl p-5 shadow-sm"
               >
                 <div className="flex flex-col sm:flex-row gap-5">
 
                   {/* Product Image */}
                   <Link
-                    href={`/shop/${item.image}`}
+                    href={`/shop/${item.id}`}
                     className="shrink-0"
                   >
                     <img
@@ -116,7 +134,7 @@ function Page() {
                   <div className="flex-1 flex flex-col">
                     <div className="flex justify-between gap-4">
                       <div>
-                        <Link href={`/shop/${item.id}`}>
+                        <Link href={`/shop/${item.uid}`}>
                           <h3 className="text-xl font-semibold hover:underline">
                             {item.title}
                           </h3>
@@ -161,6 +179,7 @@ function Page() {
                         type="button"
                         variant="ghost"
                         className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                        onClick={() => {removeItem(item.id)}}
                       >
                         Remove
                       </Button>
