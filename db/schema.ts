@@ -29,6 +29,13 @@ export const shopItems = pgTable("shop_items", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const productBySize = pgTable("product_by_size", {
+  productSizeId: uuid("product_size_id").defaultRandom().primaryKey(),
+  productId: uuid("product_id").references(() => shopItems.id),
+  size: varchar("size", { length: 10 }),
+  stock: integer("stock"),
+});
+
 export const cart = pgTable("cart", {
   id: uuid("id").defaultRandom().primaryKey(),
   productId: uuid("product_id").references(() => shopItems.id).notNull(),
