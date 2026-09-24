@@ -6,10 +6,12 @@ import { toast } from "sonner"
 
 type AddToCartButtonProps = {
   itemId: string
+  size: string
 }
 
 export function AddToCartButton({
   itemId,
+  size,
 }: AddToCartButtonProps) {
   const [loading, setLoading] = useState(false)
 
@@ -24,6 +26,7 @@ export function AddToCartButton({
         },
         body: JSON.stringify({
           itemId,
+          size,
         }),
       })
 
@@ -45,7 +48,7 @@ export function AddToCartButton({
     <Button
       className="mt-6 w-full"
       onClick={addToCart}
-      disabled={loading}
+      disabled={loading || size === ""}
     >
       {loading ? "Adding..." : "Add to Cart"}
     </Button>

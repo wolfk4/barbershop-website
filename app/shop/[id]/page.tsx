@@ -6,7 +6,7 @@ import Footer from "@/components/footer";
 import { db } from "@/db/drizzle";
 import { shopItems } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { AddToCartButton } from "@/components/cart-btn";
+//import { AddToCartButton } from "@/components/cart-btn";
 import { SizeSelector } from "@/components/size-selector";
 
 /* For the time being, we will fetch the product data from the API route instead of directly from the database. This is a temporary solution until I can set up a proper database connection in the Next.js app.
@@ -42,8 +42,10 @@ export default async function ProductPage({ params }: { params: { id: string } }
             <p className="mx-auto mt-4 max-w-md indent-8 text-muted-foreground text-left">{item.description}</p>
             <p className="mt-4 mb-4 text-2xl font-semibold">${item.price.toFixed(2)}</p>
             {/* Not Sure What the input is add to db schema first this menu */}
-            {/* <SizeSelector stockBySize={item.stockBySize} /> */}
-            <AddToCartButton itemId={item.id} />
+            <SizeSelector
+              itemId={item.id}
+              stockBySize={item.stockBySize ? JSON.parse(item.stockBySize) : {}}
+            />
           </div>
 
         </div>

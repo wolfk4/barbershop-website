@@ -34,6 +34,7 @@ export const cart = pgTable("cart", {
   uid: uuid("uid").defaultRandom().primaryKey(),
   productId: uuid("product_id").references(() => shopItems.id).notNull(),
   userId: uuid("user_id").notNull(),
+  size: varchar("size", { length: 10}),
   quantity: integer("quantity").default(1).notNull(),
   addedAt: timestamp("added_at").defaultNow().notNull(),
 });
