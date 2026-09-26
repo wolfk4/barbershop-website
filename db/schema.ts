@@ -39,3 +39,22 @@ export const cart = pgTable("cart", {
   addedAt: timestamp("added_at").defaultNow().notNull(),
 });
 
+export const orders = pgTable("orders", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  customerName: varchar("customer_name", { length: 255 }).notNull(),
+  customerEmail: varchar("customer_email", { length: 255 }).notNull(),
+  total: integer("total").notNull(),
+  status: varchar("status", { length: 20 }).default("placed").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const orderItems = pgTable("order_items", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  orderId: uuid("order_id").references(() => orders.id, { onDelete: "cascade" }).notNull(),
+  productId: uuid("product_id").references(() => shopItems.id).notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  price: integer("price").notNull(),
+  size: varchar("size", { length: 10 }),
+  quantity: integer("quantity").default(1).notNull(),
+});
+

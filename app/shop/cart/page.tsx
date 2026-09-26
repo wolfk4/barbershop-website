@@ -230,9 +230,11 @@ const removeItem = async (uid: string) => {
                 </div>
               </div>
 
-              <Button className="w-full mt-6 h-12 text-base">
-                Proceed to Checkout
-              </Button>
+              <Link href="/checkout">
+                <Button className="w-full mt-6 h-12 text-base">
+                  Proceed to Checkout
+                </Button>
+              ß</Link>
 
               <p className="text-xs text-gray-500 text-center mt-4">
                 Taxes and shipping calculated at checkout.
