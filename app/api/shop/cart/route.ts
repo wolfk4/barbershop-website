@@ -31,27 +31,31 @@ export async function GET() {
   }
 }
 export const POST = async (request: Request) => {
+  const userId = "7f3c2a91-5d84-4e17-9b63-2c8a6f104d75";
+  const size = "M"
 
-    const userId = "7f3c2a91-5d84-4e17-9b63-2c8a6f104d75";
-    try {
-        const body = await request.json()
-        const { itemId } = body
+  try {
+    const { itemId } = await request.json();
 
+    const [item] = await db
+      .insert(cart)
+      .values({
+        productId: itemId,
+        stockBySize: size,
+        userId,
+      })
+      .returning();
 
-        await db.insert(cart).values({
-            productId: itemId,
-            userId: userId,
-        });
-        return new Response("Item added to cart", {
-            status: 201,
-        });
-    } catch (error) {
-        console.error("Failed to add item to cart:", error);
-        return new Response("Internal Server Error", {
-            status: 500,
-        });
-    }
-}
+    return Response.json(item, { status: 201 });
+  } catch (error) {
+    console.error("Failed to add item to cart:", error);
+
+    return Response.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+};
 
 export const DELETE = async (request: Request) => {
   try{

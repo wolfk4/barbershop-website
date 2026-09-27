@@ -118,7 +118,6 @@ const removeItem = async (itemId: string) => {
               >
                 <div className="flex flex-col sm:flex-row gap-5">
 
-                  {/* Product Image */}
                   <Link
                     href={`/shop/${item.id}`}
                     className="shrink-0"
@@ -129,8 +128,6 @@ const removeItem = async (itemId: string) => {
                       className="w-full sm:w-36 h-36 object-cover rounded-xl"
                     />
                   </Link>
-
-                  {/* Product Information */}
                   <div className="flex-1 flex flex-col">
                     <div className="flex justify-between gap-4">
                       <div>
@@ -150,30 +147,8 @@ const removeItem = async (itemId: string) => {
                       </p>
                     </div>
 
-                    <div className="mt-auto pt-5 flex items-center justify-between">
+                    <div className="mt-auto pt-5 flex justify-end">
 
-                      {/* Quantity */}
-                      <div className="flex items-center border rounded-lg">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          className="h-9 w-9 p-0"
-                        >
-                          −
-                        </Button>
-
-                        <span className="w-10 text-center font-medium">
-                          1
-                        </span>
-
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          className="h-9 w-9 p-0"
-                        >
-                          +
-                        </Button>
-                      </div>
 
                       <Button
                         type="button"
