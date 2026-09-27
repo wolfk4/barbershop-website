@@ -2,8 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import { AddToCartButton } from "@/components/cart-btn";
-import { SizeSelector } from "@/components/size-selector";
+import { ProductPurchaseControls } from "@/components/product-purchase-controls";
 
 
 export default async function ProductPage({ params }: { readonly params: Promise<{ id: string }> }) {
@@ -36,8 +35,7 @@ export default async function ProductPage({ params }: { readonly params: Promise
             <h1 className="text-5xl font-bold">{item.title}</h1>
             <p className="mx-auto mt-4 max-w-md indent-8 text-muted-foreground text-left">{item.description}</p>
             <p className="mt-4 mb-4 text-2xl font-semibold">${item.price.toFixed(2)}</p>
-            <SizeSelector sizes={item.sizes} />
-            <AddToCartButton itemId={item.id} />
+            <ProductPurchaseControls itemId={item.id} sizes={item.sizes} />
           </div>
 
         </div>

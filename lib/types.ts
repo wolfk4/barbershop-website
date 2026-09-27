@@ -12,13 +12,12 @@ export type ShopItem = {
 export type CartItem = {
   id: string;
   productId: string;
-  userId: string;
+  size: string;
   quantity: number;
   addedAt: string;
   title: string;
-  image: string;
+  image: string | null;
   price: number;
-  description: string;
-  moreInfo: string;
-  createdAt: string;
+  description: string | null;
+  moreInfo: string | null;
 }

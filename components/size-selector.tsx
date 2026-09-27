@@ -4,32 +4,36 @@ import { useState } from "react";
 
 type SizeSelectorProps = {
   readonly sizes: Array<{ size: string | null; stock: number }>;
+  readonly onSizeChange?: (size: string) => void;
 };
 
-export function SizeSelector ({ sizes }: SizeSelectorProps) {
+export function SizeSelector({ sizes, onSizeChange }: SizeSelectorProps) {
   const [selectedSize, setSelectedSize] = useState("");
+  return (
+    <div>
+      <select
+        id="size"
+        value={selectedSize}
+        onChange={(event) => {
+          const size = event.target.value;
+          setSelectedSize(size);
+          onSizeChange?.(size);
+        }}
+        className="h-10 w-full rounded-md border border-gray-400 bg-white px-3 py-2 text-center"
+      >
+        <option value="">Select a size</option>
 
-    return (
-  <div>
-    <select
-      id="size"
-      value={selectedSize}
-      onChange={(event) => setSelectedSize(event.target.value)}
-      className="h-10 w-full rounded-md border border-gray-400 bg-white px-3 py-2 text-center"
-    >
-      <option value="">Select a size</option>
+        {sizes.map(({ size, stock }) => {
+          if (!size) return null;
+          const isAvailable = stock > 0;
 
-      {sizes.map(({ size, stock }) => {
-        if (!size) return null;
-        const isAvailable = stock > 0;
-
-        return (
-          <option key={size} value={size} disabled={!isAvailable}>
-            {isAvailable ? size : `${size} (Out of stock)`}
-          </option>
-        );
-      })}
-    </select>
-  </div>
-);
+          return (
+            <option key={size} value={size} disabled={!isAvailable}>
+              {isAvailable ? size : `${size} (Out of stock)`}
+            </option>
+          );
+        })}
+      </select>
+    </div>
+  );
 }

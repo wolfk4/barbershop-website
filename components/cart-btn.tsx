@@ -5,12 +5,11 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 
 type AddToCartButtonProps = {
-  itemId: string
+  readonly itemId: string
+  readonly size: string
 }
 
-export function AddToCartButton({
-  itemId,
-}: AddToCartButtonProps) {
+export function AddToCartButton({ itemId, size }: AddToCartButtonProps) {
   const [loading, setLoading] = useState(false)
 
   const addToCart = async () => {
@@ -24,18 +23,20 @@ export function AddToCartButton({
         },
         body: JSON.stringify({
           itemId,
+          size,
         }),
       })
 
       if (!response.ok) {
-        throw new Error("Failed to add item to cart")
+        const result = await response.json()
+        throw new Error(result.error ?? "Failed to add item to cart")
       }
 
       toast.success("Added to cart")
     } catch (error) {
       console.error("Error adding to cart:", error)
 
-      toast.error("Failed to add item to cart")
+      toast.error(error instanceof Error ? error.message : "Failed to add item to cart")
     } finally {
       setLoading(false)
     }
@@ -45,7 +46,7 @@ export function AddToCartButton({
     <Button
       className="mt-6 w-full"
       onClick={addToCart}
-      disabled={loading}
+      disabled={loading || !size}
     >
       {loading ? "Adding..." : "Add to Cart"}
     </Button>
