@@ -10,6 +10,7 @@ export type ShopItem = {
 }
 
 export type CartItem = {
+  uid: string;
   id: string;
   productId: string;
   userId: string;

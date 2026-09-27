@@ -8,6 +8,8 @@ export async function GET() {
   try {
     const items = await db
       .select({
+        id: shopItems.id,
+        uid: cart.uid,
         productId: cart.productId,
         title: shopItems.title,
         image: shopItems.image,
@@ -49,4 +51,21 @@ export const POST = async (request: Request) => {
             status: 500,
         });
     }
+}
+
+export const DELETE = async (request: Request) => {
+  try{
+    const body = await request.json();
+    const { itemId } = body;
+
+    await db.delete(cart).where(eq(cart.productId, itemId));
+    return new Response("Item removed from cart", {
+      status: 200,
+    });
+  } catch (error) {
+    console.error("Failed to remove item from cart:", error);
+    return new Response("Internal Server Error", {
+      status: 500,
+    });
+  }
 }

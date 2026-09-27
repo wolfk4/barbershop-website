@@ -6,7 +6,7 @@ import { AddToCartButton } from "@/components/cart-btn";
 import { SizeSelector } from "@/components/size-selector";
 
 
-export default async function ProductPage({ params }: { readonly params: Promise<{ id: string }> }) {
+export default async function ProductPage({ params }: { params: { id: string } }) {
 
   const { id } = await params;
 
