@@ -103,22 +103,24 @@ function Page() {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
 
-const removeItem = async (itemId: string) => {
+const removeItem = async (uid: string) => {
   try {
     const response = await fetch(`/api/shop/cart`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ itemId }),
+
+      body: JSON.stringify({ uid }),
+
     });
-    if(response.ok) {
-      setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
-    }
-  } catch (error) {
+    if(response.ok) { 
+      setItems((prevItems) => prevItems.filter((item) => item.uid !== uid));
+    } 
+  } catch (error) { 
     console.error("Failed to remove item from cart:", error)
   }
-}
+} 
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -162,7 +164,7 @@ const removeItem = async (itemId: string) => {
                   <div className="flex-1 flex flex-col">
                     <div className="flex justify-between gap-4">
                       <div>
-                        <Link href={`/shop/${item.productId}`}>
+                        <Link href={`/shop/${item.id}`}>
                           <h3 className="text-xl font-semibold hover:underline">
                             {item.title} - {item.size.toUpperCase()}
                           </h3>
@@ -171,6 +173,7 @@ const removeItem = async (itemId: string) => {
                         <p className="text-gray-500 mt-2 text-sm">
                           {item.description}
                         </p>
+                        <p className="text-sm text-gray-500">Size: {item.size}</p>
                       </div>
 
                       <p className="text-xl font-bold whitespace-nowrap">
@@ -213,8 +216,7 @@ const removeItem = async (itemId: string) => {
                         type="button"
                         variant="ghost"
                         className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                        disabled={updatingIds.includes(item.id)}
-                        onClick={() => updateQuantity(item, 0)}
+                        onClick={() => {removeItem(item.uid)}}
                       >
                         Remove
                       </Button>
@@ -262,9 +264,11 @@ const removeItem = async (itemId: string) => {
                 </div>
               </div>
 
-              <Button className="w-full mt-6 h-12 text-base">
-                Proceed to Checkout
-              </Button>
+              <Link href="/checkout">
+                <Button className="w-full mt-6 h-12 text-base">
+                  Proceed to Checkout
+                </Button>
+              ß</Link>
 
               <p className="text-xs text-gray-500 text-center mt-4">
                 Taxes and shipping calculated at checkout.

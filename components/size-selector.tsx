@@ -1,39 +1,39 @@
-"use client";
+"use client"
 
-import { useState } from "react";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { AddToCartButton } from "@/components/cart-btn"
 
 type SizeSelectorProps = {
-  readonly sizes: Array<{ size: string | null; stock: number }>;
-  readonly onSizeChange?: (size: string) => void;
+    readonly itemId: string;
+    readonly stockBySize: Record<string, number>; // Object with sizes as keys and stock counts as values
 };
 
-export function SizeSelector({ sizes, onSizeChange }: SizeSelectorProps) {
-  const [selectedSize, setSelectedSize] = useState("");
+export function SizeSelector({ itemId, stockBySize }: SizeSelectorProps) {
+  const [selectedSize, setSelectedSize] = useState("")
+  const allSizes = ["S", "M", "L", "XL", "2XL"]; // Defines all possibles sizes
+
   return (
     <div>
-      <select
-        id="size"
-        value={selectedSize}
-        onChange={(event) => {
-          const size = event.target.value;
-          setSelectedSize(size);
-          onSizeChange?.(size);
-        }}
-        className="h-10 w-full rounded-md border border-gray-400 bg-white px-3 py-2 text-center"
-      >
-        <option value="">Select a size</option>
-
-        {sizes.map(({ size, stock }) => {
-          if (!size) return null;
+      <div className="flex gap-2">
+        {allSizes.map((size) => {
+          const stock = stockBySize[size] ?? 0;
           const isAvailable = stock > 0;
 
           return (
-            <option key={size} value={size} disabled={!isAvailable}>
+            <Button
+              key={size}
+              variant={selectedSize === size ? "default" : "outline"}
+              onClick={() => setSelectedSize(size)}
+              disabled={!isAvailable}
+            >
               {isAvailable ? size : `${size} (Out of stock)`}
-            </option>
+            </Button>
           );
         })}
-      </select>
+      </div>
+
+      <AddToCartButton itemId={itemId} size={selectedSize} />
     </div>
-  );
+  )
 }

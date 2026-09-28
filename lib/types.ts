@@ -19,6 +19,8 @@ export type CartItem = {
   title: string;
   image: string | null;
   price: number;
-  description: string | null;
-  moreInfo: string | null;
+  description: string;
+  moreInfo: string;
+  createdAt: string;
+  size: string;
 }

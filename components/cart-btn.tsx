@@ -5,11 +5,14 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 
 type AddToCartButtonProps = {
-  readonly itemId: string
-  readonly size: string
+  itemId: string
+  size: string
 }
 
-export function AddToCartButton({ itemId, size }: AddToCartButtonProps) {
+export function AddToCartButton({
+  itemId,
+  size,
+}: AddToCartButtonProps) {
   const [loading, setLoading] = useState(false)
 
   const addToCart = async () => {
@@ -46,7 +49,7 @@ export function AddToCartButton({ itemId, size }: AddToCartButtonProps) {
     <Button
       className="mt-6 w-full"
       onClick={addToCart}
-      disabled={loading || !size}
+      disabled={loading || size === ""}
     >
       {loading ? "Adding..." : "Add to Cart"}
     </Button>
