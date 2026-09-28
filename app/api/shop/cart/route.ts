@@ -37,77 +37,32 @@ export async function GET()
     );
   }
 }
-
 export const POST = async (request: Request) => {
-   
-    const userId = "7f3c2a91-5d84-4e17-9b63-2c8a6f104d75";
-    try {
-        const body = await request.json()
-        const { itemId, size } = body
+  const userId = "7f3c2a91-5d84-4e17-9b63-2c8a6f104d75";
+  const size = "M"
 
+  try {
+    const { itemId } = await request.json();
 
-        await db.insert(cart).values({
-            productId: itemId,
-            userId: userId, 
-            size: size,
-        });
-
-        return new Response("Item added to cart", {
-            status: 201,
-        });
-    } 
-    catch (error) {
-        console.error("Failed to add item to cart:", error);
-        return new Response("Internal Server Error", {
-            status: 500,  
-        });
-    }
-
-    const availableStock = await getAvailableStock(itemId, size);
-
-    if (availableStock < 1) {
-      return Response.json(
-        { error: "This item is out of stock" },
-        { status: 400 }
-      );
-    }
-
-    const [existingItem] = await db
-      .select({ uid: cart.uid, quantity: cart.quantity })
-      .from(cart)
-      .where(and(eq(cart.productId, itemId), eq(cart.size, size)))
-      .limit(1);
-    const nextQuantity = (existingItem?.quantity ?? 0) + 1;
-
-    if (nextQuantity > availableStock) {
-      return Response.json(
-        { error: `Only ${availableStock} of this item are in stock` },
-        { status: 400 }
-      );
-    }
-
-    if (existingItem) {
-      await db
-        .update(cart)
-        .set({ quantity: nextQuantity })
-        .where(eq(cart.uid, existingItem.uid));
-    } else {
-      await db.insert(cart).values({
+    const [item] = await db
+      .insert(cart)
+      .values({
         productId: itemId,
+        stockBySize: size,
         userId,
-        size,
-      });
-    }
+      })
+      .returning();
 
-    return Response.json(
-      { quantity: nextQuantity },
-      { status: existingItem ? 200 : 201 }
-    );
+    return Response.json(item, { status: 201 });
   } catch (error) {
     console.error("Failed to add item to cart:", error);
-    return new Response("Internal Server Error", { status: 500 });
+
+    return Response.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
-}
+};
 
 export const DELETE = async (request: Request) => {
   try{

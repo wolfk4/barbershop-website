@@ -148,7 +148,6 @@ const removeItem = async (uid: string) => {
               >
                 <div className="flex flex-col sm:flex-row gap-5">
 
-                  {/* Product Image */}
                   <Link
                     href={`/shop/${item.productId}`}
                     className="shrink-0"
@@ -159,8 +158,6 @@ const removeItem = async (uid: string) => {
                       className="w-full sm:w-36 h-36 object-cover rounded-xl"
                     />
                   </Link>
-
-                  {/* Product Information */}
                   <div className="flex-1 flex flex-col">
                     <div className="flex justify-between gap-4">
                       <div>
@@ -181,36 +178,8 @@ const removeItem = async (uid: string) => {
                       </p>
                     </div>
 
-                    <div className="mt-auto pt-5 flex items-center justify-between">
+                    <div className="mt-auto pt-5 flex justify-end">
 
-                      {/* Quantity */}
-                      <div className="flex items-center border rounded-lg">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          className="h-9 w-9 p-0"
-                          aria-label={`Decrease quantity of ${item.title}`}
-                          disabled={updatingIds.includes(item.id)}
-                          onClick={() => updateQuantity(item, item.quantity - 1)}
-                        >
-                          −
-                        </Button>
-
-                        <span className="w-10 text-center font-medium" aria-live="polite">
-                          {item.quantity}
-                        </span>
-
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          className="h-9 w-9 p-0"
-                          aria-label={`Increase quantity of ${item.title}`}
-                          disabled={updatingIds.includes(item.id) || item.quantity >= 10}
-                          onClick={() => updateQuantity(item, item.quantity + 1)}
-                        >
-                          +
-                        </Button>
-                      </div>
 
                       <Button
                         type="button"

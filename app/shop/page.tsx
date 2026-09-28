@@ -9,10 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { db } from "@/db/drizzle"
-import { shopItems } from "@/db/schema"
 import { useEffect, useState } from "react"
 import { ShopItem } from "@/lib/types"
 

@@ -1,12 +1,34 @@
 'use client'
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart} from "lucide-react";
-import { useState } from "react";
+import { ShoppingCart} from "lucide-react";;
+import { useEffect, useState } from "react";
+
 
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [count, setCount] = useState(0);
+
+
+useEffect(() => {
+  const fetchCount = async () => {
+    try {
+      const response = await fetch("/api/shop/cart");
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
+
+      const products = await response.json();
+      setCount(products.length);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchCount();
+}, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -23,8 +45,14 @@ function Header() {
         <h1 className="text-2xl font-extrabold tracking-widest uppercase"> Kaizen Cutz </h1>
       </Link>
       <div className="flex items-center gap-3 w-32 justify-end">
-        <Link href="/shop/cart">
+        <Link href="/shop/cart" className="relative inline-flex">
           <ShoppingCart className="h-6 w-6" />
+
+          {count > 0 && (
+            <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-white px-1 text-xs text-black">
+              {count}
+            </span>
+          )}
         </Link>
             <div
               className="HAMBURGER-ICON space-y-2"
