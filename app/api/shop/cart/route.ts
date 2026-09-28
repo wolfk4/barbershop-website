@@ -1,26 +1,33 @@
 import { db } from "@/db/drizzle";
-import { cart, shopItems } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { cart, shopItems } from "@/db/schema"; 
+import { eq } from "drizzle-orm";  
 
+const userId = "7f3c2a91-5d84-4e17-9b63-2c8a6f104d75";
+const maxPurchaseQuantity = 10;
 
-
-export async function GET() {
+export async function GET() 
+{
   try {
     const items = await db
       .select({
-        id: shopItems.id,
+        id: shopItems.id, 
         uid: cart.uid,
         productId: cart.productId,
+        size: cart.size,
+        quantity: cart.quantity,
+        addedAt: cart.addedAt,
         title: shopItems.title,
-        image: shopItems.image,
-        price: shopItems.price,
-        description: shopItems.description,
+        image: shopItems.image, 
+        price: shopItems.price, 
+        description: shopItems.description, 
         moreInfo: shopItems.moreInfo,
+        size: cart.size, 
       })
+
       .from(cart)
       .innerJoin(shopItems, eq(cart.productId, shopItems.id));
 
-    return Response.json(items);
+    return Response.json(items); 
   } catch (error) {
     console.error("Failed to fetch cart items:", error);
 
@@ -59,17 +66,19 @@ export const POST = async (request: Request) => {
 
 export const DELETE = async (request: Request) => {
   try{
-    const body = await request.json();
-    const { itemId } = body;
+    const body = await request.json(); 
+    const { uid } = body; 
 
-    await db.delete(cart).where(eq(cart.productId, itemId));
+    await db.delete(cart).where(eq(cart.uid, uid));
     return new Response("Item removed from cart", {
-      status: 200,
+      status: 200, 
     });
-  } catch (error) {
+  }  
+  catch (error) { 
     console.error("Failed to remove item from cart:", error);
-    return new Response("Internal Server Error", {
-      status: 500,
+    return new Response("Internal Server Error", { 
+      status: 500,  
     });
   }
+
 }

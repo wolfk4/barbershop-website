@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { CartItem} from "@/lib/types"
+import { toast } from "sonner"
 
 
 function Page() {
   const [items, setItems] = useState<CartItem[]>([])
+  const [updatingIds, setUpdatingIds] = useState<string[]>([])
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -30,6 +32,34 @@ function Page() {
     fetchItems()
   }, [])
 
+  const updateQuantity = async (item: CartItem, quantity: number) => {
+    setUpdatingIds((current) => [...current, item.id])
+
+    try {
+      const response = await fetch("/api/shop/cart", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: item.id, quantity }),
+      })
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error ?? "Failed to update quantity")
+      }
+
+      if (result.removed) {
+        setItems((current) => current.filter((cartItem) => cartItem.id !== item.id))
+      } else {
+        setItems((current) => current.map((cartItem) =>
+          cartItem.id === item.id ? { ...cartItem, quantity: result.quantity } : cartItem
+        ))
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to update quantity")
+    } finally {
+      setUpdatingIds((current) => current.filter((id) => id !== item.id))
+    }
+  }
 
   console.log("Cart items:", items)
   if (!items || items.length === 0) {
@@ -70,27 +100,27 @@ function Page() {
     )
   }
 
-  const total = items.reduce(
-    (sum, item) => sum + item.price,
-    0
-  )
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
 
-const removeItem = async (itemId: string) => {
+const removeItem = async (uid: string) => {
   try {
     const response = await fetch(`/api/shop/cart`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ itemId }),
+
+      body: JSON.stringify({ uid }),
+
     });
-    if(response.ok) {
-      setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
-    }
-  } catch (error) {
+    if(response.ok) { 
+      setItems((prevItems) => prevItems.filter((item) => item.uid !== uid));
+    } 
+  } catch (error) { 
     console.error("Failed to remove item from cart:", error)
   }
-}
+} 
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -103,7 +133,7 @@ const removeItem = async (itemId: string) => {
           </h2>
 
           <p className="text-gray-600 mt-2">
-           {items.length} item{items.length !== 1 ? 's' : ''} in your bag
+           {itemCount} item{itemCount !== 1 ? 's' : ''} in your bag
           </p>
         </div>
 
@@ -113,17 +143,17 @@ const removeItem = async (itemId: string) => {
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
               <div
-                key={item.uid}
+                key={item.id}
                 className="bg-white border rounded-2xl p-5 shadow-sm"
               >
                 <div className="flex flex-col sm:flex-row gap-5">
 
                   <Link
-                    href={`/shop/${item.id}`}
+                    href={`/shop/${item.productId}`}
                     className="shrink-0"
                   >
                     <img
-                      src={item.image}
+                      src={item.image ?? ""}
                       alt={item.title}
                       className="w-full sm:w-36 h-36 object-cover rounded-xl"
                     />
@@ -131,19 +161,20 @@ const removeItem = async (itemId: string) => {
                   <div className="flex-1 flex flex-col">
                     <div className="flex justify-between gap-4">
                       <div>
-                        <Link href={`/shop/${item.uid}`}>
+                        <Link href={`/shop/${item.id}`}>
                           <h3 className="text-xl font-semibold hover:underline">
-                            {item.title}
+                            {item.title} - {item.size.toUpperCase()}
                           </h3>
                         </Link>
 
                         <p className="text-gray-500 mt-2 text-sm">
                           {item.description}
                         </p>
+                        <p className="text-sm text-gray-500">Size: {item.size}</p>
                       </div>
 
                       <p className="text-xl font-bold whitespace-nowrap">
-                        ${item.price}
+                        ${(item.price * item.quantity).toFixed(2)}
                       </p>
                     </div>
 
@@ -154,7 +185,7 @@ const removeItem = async (itemId: string) => {
                         type="button"
                         variant="ghost"
                         className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                        onClick={() => {removeItem(item.id)}}
+                        onClick={() => {removeItem(item.uid)}}
                       >
                         Remove
                       </Button>
@@ -202,9 +233,11 @@ const removeItem = async (itemId: string) => {
                 </div>
               </div>
 
-              <Button className="w-full mt-6 h-12 text-base">
-                Proceed to Checkout
-              </Button>
+              <Link href="/shop/checkout" className="mt-6 block">
+                <Button className="h-12 w-full text-base">
+                  Proceed to Checkout
+                </Button>
+              </Link>
 
               <p className="text-xs text-gray-500 text-center mt-4">
                 Taxes and shipping calculated at checkout.

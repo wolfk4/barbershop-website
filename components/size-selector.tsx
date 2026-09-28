@@ -1,36 +1,39 @@
-"use client";
+"use client"
 
-import { useState } from "react";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { AddToCartButton } from "@/components/cart-btn"
 
 type SizeSelectorProps = {
+    readonly itemId: string;
     readonly stockBySize: Record<string, number>; // Object with sizes as keys and stock counts as values
 };
 
-export function SizeSelector ({ stockBySize }: SizeSelectorProps) {
-    const [selectedSize, setSelectedSize] = useState("");
-    const allSizes = ["S", "M", "L", "XL", "2XL"]; // Defines all possibles sizes
+export function SizeSelector({ itemId, stockBySize }: SizeSelectorProps) {
+  const [selectedSize, setSelectedSize] = useState("")
+  const allSizes = ["S", "M", "L", "XL", "2XL"]; // Defines all possibles sizes
 
-    return (
-  <div>
-    <select
-      id="size"
-      value={selectedSize}
-      onChange={(event) => setSelectedSize(event.target.value)}
-      className="rounded-md border border-gray-400 bg-white px-3 py-2 text-center"
-    >
-      <option value="">Select a size</option>
+  return (
+    <div>
+      <div className="flex gap-2">
+        {allSizes.map((size) => {
+          const stock = stockBySize[size] ?? 0;
+          const isAvailable = stock > 0;
 
-      {allSizes.map((size) => {
-        const stock = stockBySize[size] ?? 0;
-        const isAvailable = stock > 0;
+          return (
+            <Button
+              key={size}
+              variant={selectedSize === size ? "default" : "outline"}
+              onClick={() => setSelectedSize(size)}
+              disabled={!isAvailable}
+            >
+              {isAvailable ? size : `${size} (Out of stock)`}
+            </Button>
+          );
+        })}
+      </div>
 
-        return (
-          <option key={size} value={size} disabled={!isAvailable}>
-            {isAvailable ? size : `${size} (Out of stock)`}
-          </option>
-        );
-      })}
-    </select>
-  </div>
-);
+      <AddToCartButton itemId={itemId} size={selectedSize} />
+    </div>
+  )
 }

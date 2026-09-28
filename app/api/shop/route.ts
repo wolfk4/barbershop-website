@@ -24,7 +24,7 @@ export async function POST(request: Request) {
 
     try {
         const body = await request.json()
-        const { title, image, price, description, moreInfo } = body
+        const { title, image, price, description, moreInfo} = body;
         const [newItem] = await db.insert(shopItems).values({
             title: title,
             image: image,
