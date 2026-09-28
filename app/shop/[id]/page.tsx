@@ -2,10 +2,14 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import { ProductPurchaseControls } from "@/components/product-purchase-controls";
+import { db } from "@/db/drizzle";
+import { shopItems } from "@/db/schema";
+import { eq } from "drizzle-orm";
+//import { AddToCartButton } from "@/components/cart-btn";
+import { SizeSelector } from "@/components/size-selector";
 
 
-export default async function ProductPage({ params }: { readonly params: Promise<{ id: string }> }) {
+export default async function ProductPage({ params }: { params: { id: string } }) {
 
   const { id } = await params;
 
@@ -35,7 +39,11 @@ export default async function ProductPage({ params }: { readonly params: Promise
             <h1 className="text-5xl font-bold">{item.title}</h1>
             <p className="mx-auto mt-4 max-w-md indent-8 text-muted-foreground text-left">{item.description}</p>
             <p className="mt-4 mb-4 text-2xl font-semibold">${item.price.toFixed(2)}</p>
-            <ProductPurchaseControls itemId={item.id} sizes={item.sizes} />
+            {/* Not Sure What the input is add to db schema first this menu */}
+            <SizeSelector
+              itemId={item.id}
+              stockBySize={item.stockBySize ? JSON.parse(item.stockBySize) : {}}
+            />
           </div>
 
         </div>
