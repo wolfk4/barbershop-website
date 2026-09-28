@@ -21,7 +21,7 @@ export async function GET()
         price: shopItems.price, 
         description: shopItems.description, 
         moreInfo: shopItems.moreInfo,
-        size: cart.size, 
+        stockBySize: cart.stockBySize
       })
 
       .from(cart)

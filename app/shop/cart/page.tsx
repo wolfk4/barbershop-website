@@ -32,34 +32,6 @@ function Page() {
     fetchItems()
   }, [])
 
-  const updateQuantity = async (item: CartItem, quantity: number) => {
-    setUpdatingIds((current) => [...current, item.id])
-
-    try {
-      const response = await fetch("/api/shop/cart", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: item.id, quantity }),
-      })
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.error ?? "Failed to update quantity")
-      }
-
-      if (result.removed) {
-        setItems((current) => current.filter((cartItem) => cartItem.id !== item.id))
-      } else {
-        setItems((current) => current.map((cartItem) =>
-          cartItem.id === item.id ? { ...cartItem, quantity: result.quantity } : cartItem
-        ))
-      }
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to update quantity")
-    } finally {
-      setUpdatingIds((current) => current.filter((id) => id !== item.id))
-    }
-  }
 
   console.log("Cart items:", items)
   if (!items || items.length === 0) {
@@ -143,7 +115,7 @@ const removeItem = async (uid: string) => {
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
               <div
-                key={item.id}
+                key={item.uid}
                 className="bg-white border rounded-2xl p-5 shadow-sm"
               >
                 <div className="flex flex-col sm:flex-row gap-5">
@@ -163,14 +135,14 @@ const removeItem = async (uid: string) => {
                       <div>
                         <Link href={`/shop/${item.id}`}>
                           <h3 className="text-xl font-semibold hover:underline">
-                            {item.title} - {item.size.toUpperCase()}
+                            {item.title}
                           </h3>
                         </Link>
 
                         <p className="text-gray-500 mt-2 text-sm">
                           {item.description}
                         </p>
-                        <p className="text-sm text-gray-500">Size: {item.size}</p>
+                        <p className="text-sm text-gray-500">Size: {item.stockBySize}</p>
                       </div>
 
                       <p className="text-xl font-bold whitespace-nowrap">

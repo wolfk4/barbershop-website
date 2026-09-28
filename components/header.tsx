@@ -74,7 +74,7 @@ useEffect(() => {
                   <Link href="/about-us" className="block hover:underline">
                     About Us
                   </Link>
-                  <Link href="/shop/cart" className="block hover:underline">
+                  <Link href="/shop" className="block hover:underline">
                     Shop
                   </Link>
                 </div>
