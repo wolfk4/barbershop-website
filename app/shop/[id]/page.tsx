@@ -5,7 +5,7 @@ import Footer from "@/components/footer";
 import { ProductPurchaseControls } from "@/components/product-purchase-controls";
 
 
-export default async function ProductPage({ params }: { readonly params: Promise<{ id: string }> }) {
+export default async function ProductPage({ params }: { params: { id: string } }) {
 
   const { id } = await params;
 

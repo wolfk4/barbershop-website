@@ -8,6 +8,7 @@ import { useEffect, useState } from "react"
 import { CartItem} from "@/lib/types"
 import { toast } from "sonner"
 
+
 function Page() {
   const [items, setItems] = useState<CartItem[]>([])
   const [updatingIds, setUpdatingIds] = useState<string[]>([])
@@ -101,6 +102,23 @@ function Page() {
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
+
+const removeItem = async (itemId: string) => {
+  try {
+    const response = await fetch(`/api/shop/cart`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ itemId }),
+    });
+    if(response.ok) {
+      setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+    }
+  } catch (error) {
+    console.error("Failed to remove item from cart:", error)
+  }
+}
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">

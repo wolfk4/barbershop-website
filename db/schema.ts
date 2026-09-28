@@ -24,6 +24,7 @@ export const shopItems = pgTable("shop_items", {
   title: varchar("title", { length: 255 }).notNull(),
   image: text("image"),
   price: integer("price").notNull(),
+  stockBySize: text("stock_by_size"),
   description: text("description"),
   moreInfo: text("more_info"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
