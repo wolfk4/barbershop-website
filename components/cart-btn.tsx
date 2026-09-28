@@ -31,14 +31,15 @@ export function AddToCartButton({
       })
 
       if (!response.ok) {
-        throw new Error("Failed to add item to cart")
+        const result = await response.json()
+        throw new Error(result.error ?? "Failed to add item to cart")
       }
 
       toast.success("Added to cart")
     } catch (error) {
       console.error("Error adding to cart:", error)
 
-      toast.error("Failed to add item to cart")
+      toast.error(error instanceof Error ? error.message : "Failed to add item to cart")
     } finally {
       setLoading(false)
     }
