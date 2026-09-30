@@ -135,7 +135,7 @@ const removeItem = async (uid: string) => {
                       <div>
                         <Link href={`/shop/${item.id}`}>
                           <h3 className="text-xl font-semibold hover:underline">
-                            {item.title}
+                            {item.title}{item.size ? ` - ${item.size.toUpperCase()}` : ""}
                           </h3>
                         </Link>
 
@@ -209,7 +209,7 @@ const removeItem = async (uid: string) => {
                 <Button className="h-12 w-full text-base">
                   Proceed to Checkout
                 </Button>
-              </Link>
+               </Link>
 
               <p className="text-xs text-gray-500 text-center mt-4">
                 Taxes and shipping calculated at checkout.

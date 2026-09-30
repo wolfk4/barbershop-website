@@ -1,9 +1,19 @@
 import { db } from "@/db/drizzle";
-import { cart, shopItems } from "@/db/schema"; 
-import { eq } from "drizzle-orm";  
+import { cart, shopItems, productBySize } from "@/db/schema"; 
+import { and, eq } from "drizzle-orm";  
 
 const userId = "7f3c2a91-5d84-4e17-9b63-2c8a6f104d75";
 const maxPurchaseQuantity = 10;
+
+async function getAvailableStock(itemId: string, size: string) {
+  const [row] = await db
+    .select({ stock: productBySize.stock })
+    .from(productBySize)
+    .where(and(eq(productBySize.productId, itemId), eq(productBySize.size, size)))
+    .limit(1);
+
+  return row?.stock ?? 0;
+}
 
 export async function GET() 
 {
@@ -21,7 +31,6 @@ export async function GET()
         price: shopItems.price, 
         description: shopItems.description, 
         moreInfo: shopItems.moreInfo,
-        stockBySize: cart.stockBySize
       })
 
       .from(cart)
@@ -38,20 +47,48 @@ export async function GET()
   }
 }
 export const POST = async (request: Request) => {
-  const userId = "7f3c2a91-5d84-4e17-9b63-2c8a6f104d75";
-  const size = "M"
-
   try {
-    const { itemId } = await request.json();
+    const { itemId, size } = await request.json();
 
-    const [item] = await db
-      .insert(cart)
-      .values({
-        productId: itemId,
-        stockBySize: size,
-        userId,
-      })
-      .returning();
+    const availableStock = await getAvailableStock(itemId, size);
+
+    if (availableStock < 1) {
+      return Response.json(
+        { error: "This item is out of stock" },
+        { status: 400 }
+      );
+    }
+
+    const [existingItem] = await db
+      .select({ uid: cart.uid, quantity: cart.quantity })
+      .from(cart)
+      .where(and(eq(cart.productId, itemId), eq(cart.size, size)))
+      .limit(1);
+
+    const nextQuantity = (existingItem?.quantity ?? 0) + 1;
+
+    if (nextQuantity > maxPurchaseQuantity) {
+    return Response.json(
+      { error: `Max ${maxPurchaseQuantity} per item` },
+      { status: 400 }
+    );
+    }
+
+    if (nextQuantity > availableStock) {
+      return Response.json(
+        { error: `Only ${availableStock} of this item are in stock` },
+        { status: 400 }
+      );
+    }
+
+    if (existingItem) {
+      await db
+        .update(cart)
+        .set({ quantity: nextQuantity })
+        .where(eq(cart.uid, existingItem.uid));
+    } else {
+      await db.insert(cart).values({ productId: itemId, userId, size });
+    }
 
     return Response.json(item, { status: 201 });
   } catch (error) {
