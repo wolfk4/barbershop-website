@@ -25,7 +25,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
   return (
     <div className="flex min-h-screen flex-col bg-[#f0f0f0]">
       <Header />
-      <div className="flex flex-1 flex-col items-start gap-8 py-16 px-6 pl-6 md:pl-16 lg:pl-32">
+      <div className="flex flex-1 flex-col items-start gap-8 py-16 px-6 mx-auto">
         <div className="flex w-full max-w-6xl flex-col gap-24 md:flex-row">
           <div className="w-full md:w-1/2">
             <Image
