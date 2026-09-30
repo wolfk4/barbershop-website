@@ -1,18 +1,21 @@
 import { db } from "@/db/drizzle";
-import { cart, shopItems, productBySize } from "@/db/schema"; 
+import { cart, shopItems } from "@/db/schema"; 
 import { and, eq } from "drizzle-orm";  
 
 const userId = "7f3c2a91-5d84-4e17-9b63-2c8a6f104d75";
 const maxPurchaseQuantity = 10;
 
 async function getAvailableStock(itemId: string, size: string) {
-  const [row] = await db
-    .select({ stock: productBySize.stock })
-    .from(productBySize)
-    .where(and(eq(productBySize.productId, itemId), eq(productBySize.size, size)))
+  const [item] = await db
+    .select({ stockBySize: shopItems.stockBySize })
+    .from(shopItems)
+    .where(eq(shopItems.id, itemId))
     .limit(1);
 
-  return row?.stock ?? 0;
+  if (!item?.stockBySize || !size) return 0;
+
+  const stock = JSON.parse(item.stockBySize);
+  return stock[size.toUpperCase()] ?? 0;
 }
 
 export async function GET() 
@@ -90,10 +93,12 @@ export const POST = async (request: Request) => {
       await db.insert(cart).values({ productId: itemId, userId, size });
     }
 
-    return Response.json(item, { status: 201 });
+  return Response.json(
+      { quantity: nextQuantity },
+      { status: existingItem ? 200 : 201 }
+    );
   } catch (error) {
     console.error("Failed to add item to cart:", error);
-
     return Response.json(
       { error: "Internal Server Error" },
       { status: 500 }

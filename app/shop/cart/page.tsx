@@ -205,7 +205,7 @@ const removeItem = async (uid: string) => {
                 </div>
               </div>
 
-              <Link href="/shop/checkout" className="mt-6 block">
+              <Link href="/checkout" className="mt-6 block">
                 <Button className="h-12 w-full text-base">
                   Proceed to Checkout
                 </Button>
