@@ -39,7 +39,8 @@ export const productBySize = pgTable("product_by_size", {
 
 export const cart = pgTable("cart", {
   uid: uuid("uid").defaultRandom().primaryKey(),
-  productId: uuid("product_id").references(() => shopItems.id).notNull(),
+  productId: uuid("product_id").references(() => shopItems.id),
+  stockBySize: text("stock_by_size").notNull(),
   userId: uuid("user_id").notNull(),
   size: varchar("size", { length: 10}),
   quantity: integer("quantity").default(1).notNull(),

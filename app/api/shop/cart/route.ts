@@ -46,7 +46,6 @@ export async function GET()
     );
   }
 }
-
 export const POST = async (request: Request) => {
   try {
     const { itemId, size } = await request.json();
@@ -91,13 +90,14 @@ export const POST = async (request: Request) => {
       await db.insert(cart).values({ productId: itemId, userId, size });
     }
 
-    return Response.json(
-      { quantity: nextQuantity },
-      { status: existingItem ? 200 : 201 }
-    );
+    return Response.json(item, { status: 201 });
   } catch (error) {
     console.error("Failed to add item to cart:", error);
-    return new Response("Internal Server Error", { status: 500 });
+
+    return Response.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 };
 

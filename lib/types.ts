@@ -22,5 +22,5 @@ export type CartItem = {
   description: string;
   moreInfo: string;
   createdAt: string;
-  size: string;
+  stockBySize: string;
 }

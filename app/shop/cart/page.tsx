@@ -32,34 +32,6 @@ function Page() {
     fetchItems()
   }, [])
 
-  const updateQuantity = async (item: CartItem, quantity: number) => {
-    setUpdatingIds((current) => [...current, item.id])
-
-    try {
-      const response = await fetch("/api/shop/cart", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: item.id, quantity }),
-      })
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.error ?? "Failed to update quantity")
-      }
-
-      if (result.removed) {
-        setItems((current) => current.filter((cartItem) => cartItem.id !== item.id))
-      } else {
-        setItems((current) => current.map((cartItem) =>
-          cartItem.id === item.id ? { ...cartItem, quantity: result.quantity } : cartItem
-        ))
-      }
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to update quantity")
-    } finally {
-      setUpdatingIds((current) => current.filter((id) => id !== item.id))
-    }
-  }
 
   console.log("Cart items:", items)
   if (!items || items.length === 0) {
@@ -143,12 +115,11 @@ const removeItem = async (uid: string) => {
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
               <div
-                key={item.id}
+                key={item.uid}
                 className="bg-white border rounded-2xl p-5 shadow-sm"
               >
                 <div className="flex flex-col sm:flex-row gap-5">
 
-                  {/* Product Image */}
                   <Link
                     href={`/shop/${item.productId}`}
                     className="shrink-0"
@@ -159,8 +130,6 @@ const removeItem = async (uid: string) => {
                       className="w-full sm:w-36 h-36 object-cover rounded-xl"
                     />
                   </Link>
-
-                  {/* Product Information */}
                   <div className="flex-1 flex flex-col">
                     <div className="flex justify-between gap-4">
                       <div>
@@ -173,7 +142,7 @@ const removeItem = async (uid: string) => {
                         <p className="text-gray-500 mt-2 text-sm">
                           {item.description}
                         </p>
-                        <p className="text-sm text-gray-500">Size: {item.size}</p>
+                        <p className="text-sm text-gray-500">Size: {item.stockBySize}</p>
                       </div>
 
                       <p className="text-xl font-bold whitespace-nowrap">
@@ -181,36 +150,8 @@ const removeItem = async (uid: string) => {
                       </p>
                     </div>
 
-                    <div className="mt-auto pt-5 flex items-center justify-between">
+                    <div className="mt-auto pt-5 flex justify-end">
 
-                      {/* Quantity */}
-                      <div className="flex items-center border rounded-lg">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          className="h-9 w-9 p-0"
-                          aria-label={`Decrease quantity of ${item.title}`}
-                          disabled={updatingIds.includes(item.id)}
-                          onClick={() => updateQuantity(item, item.quantity - 1)}
-                        >
-                          −
-                        </Button>
-
-                        <span className="w-10 text-center font-medium" aria-live="polite">
-                          {item.quantity}
-                        </span>
-
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          className="h-9 w-9 p-0"
-                          aria-label={`Increase quantity of ${item.title}`}
-                          disabled={updatingIds.includes(item.id) || item.quantity >= 10}
-                          onClick={() => updateQuantity(item, item.quantity + 1)}
-                        >
-                          +
-                        </Button>
-                      </div>
 
                       <Button
                         type="button"
@@ -264,8 +205,8 @@ const removeItem = async (uid: string) => {
                 </div>
               </div>
 
-              <Link href="/checkout">
-                <Button className="w-full mt-6 h-12 text-base">
+              <Link href="/shop/checkout" className="mt-6 block">
+                <Button className="h-12 w-full text-base">
                   Proceed to Checkout
                 </Button>
                </Link>
