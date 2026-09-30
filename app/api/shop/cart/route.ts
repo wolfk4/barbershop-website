@@ -1,9 +1,19 @@
 import { db } from "@/db/drizzle";
-import { cart, shopItems } from "@/db/schema"; 
-import { eq } from "drizzle-orm";  
+import { cart, shopItems, productBySize } from "@/db/schema"; 
+import { and, eq } from "drizzle-orm";  
 
 const userId = "7f3c2a91-5d84-4e17-9b63-2c8a6f104d75";
 const maxPurchaseQuantity = 10;
+
+async function getAvailableStock(itemId: string, size: string) {
+  const [row] = await db
+    .select({ stock: productBySize.stock })
+    .from(productBySize)
+    .where(and(eq(productBySize.productId, itemId), eq(productBySize.size, size)))
+    .limit(1);
+
+  return row?.stock ?? 0;
+}
 
 export async function GET() 
 {
@@ -21,7 +31,6 @@ export async function GET()
         price: shopItems.price, 
         description: shopItems.description, 
         moreInfo: shopItems.moreInfo,
-        size: cart.size, 
       })
 
       .from(cart)
@@ -39,29 +48,8 @@ export async function GET()
 }
 
 export const POST = async (request: Request) => {
-   
-    const userId = "7f3c2a91-5d84-4e17-9b63-2c8a6f104d75";
-    try {
-        const body = await request.json()
-        const { itemId, size } = body
-
-
-        await db.insert(cart).values({
-            productId: itemId,
-            userId: userId, 
-            size: size,
-        });
-
-        return new Response("Item added to cart", {
-            status: 201,
-        });
-    } 
-    catch (error) {
-        console.error("Failed to add item to cart:", error);
-        return new Response("Internal Server Error", {
-            status: 500,  
-        });
-    }
+  try {
+    const { itemId, size } = await request.json();
 
     const availableStock = await getAvailableStock(itemId, size);
 
@@ -77,7 +65,15 @@ export const POST = async (request: Request) => {
       .from(cart)
       .where(and(eq(cart.productId, itemId), eq(cart.size, size)))
       .limit(1);
+
     const nextQuantity = (existingItem?.quantity ?? 0) + 1;
+
+    if (nextQuantity > maxPurchaseQuantity) {
+    return Response.json(
+      { error: `Max ${maxPurchaseQuantity} per item` },
+      { status: 400 }
+    );
+    }
 
     if (nextQuantity > availableStock) {
       return Response.json(
@@ -92,11 +88,7 @@ export const POST = async (request: Request) => {
         .set({ quantity: nextQuantity })
         .where(eq(cart.uid, existingItem.uid));
     } else {
-      await db.insert(cart).values({
-        productId: itemId,
-        userId,
-        size,
-      });
+      await db.insert(cart).values({ productId: itemId, userId, size });
     }
 
     return Response.json(
@@ -107,7 +99,7 @@ export const POST = async (request: Request) => {
     console.error("Failed to add item to cart:", error);
     return new Response("Internal Server Error", { status: 500 });
   }
-}
+};
 
 export const DELETE = async (request: Request) => {
   try{
