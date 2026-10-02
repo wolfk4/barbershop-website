@@ -5,8 +5,10 @@ import { integer, pgTable, serial, text, timestamp, varchar, uuid } from "drizzl
 export const usersTable = pgTable("users", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: varchar({ length: 255 }).notNull(),
-  age: integer().notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
+  role: varchar({ length: 50 }).notNull().default("user"),
+  password: text().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 
