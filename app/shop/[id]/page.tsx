@@ -1,26 +1,63 @@
-import { notFound } from "next/navigation";
+'use client';
 import Image from "next/image";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import { db } from "@/db/drizzle";
-import { shopItems } from "@/db/schema";
-import { eq } from "drizzle-orm";
-//import { AddToCartButton } from "@/components/cart-btn";
 import { SizeSelector } from "@/components/size-selector";
+import { useEffect, useState } from "react";
+import { notFound, useParams } from "next/navigation";
 
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
+export default function ProductPage() {
+   const { id } = useParams<{ id: string }>();
+  const [item, setItem] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [missing, setMissing] = useState(false);
+useEffect(() => {
+    const controller = new AbortController();
 
-  const { id } = await params;
+    async function fetchProduct() {
+      try {
+        const res = await fetch(`/api/products/${encodeURIComponent(id)}`, {
+          signal: controller.signal,
+        });
 
-  // Fetch product data from the API
-  const response = await fetch(`http://localhost:3000/api/products/${id}`)
-  if(!response.ok) {
-    notFound();
-  }
+        if (res.status === 404) {
+          setMissing(true);
+          return;
+        }
 
-  // Parse the response as JSON
-  const item = await response.json();
+        if (!res.ok) {
+          throw new Error("Failed to load product.");
+        }
+
+        const data = await res.json();
+        if (!data) {
+          setMissing(true);
+          return;
+        }
+
+        setItem(data);
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error("Error fetching product:", error);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchProduct();
+
+    return () => controller.abort();
+  }, [id]);
+
+
+  if (loading) return <p>Loading...</p>;
+  if (missing) notFound();
+
+  console.log(item)
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f0f0f0]">
