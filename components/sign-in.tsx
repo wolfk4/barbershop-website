@@ -1,47 +1,39 @@
-import { signIn } from "@/auth";
-import { AuthError } from "next-auth";
-import { redirect } from "next/navigation";
+'use client'
+
+import { useState } from "react"
+import { submitEmployeeLogin } from "@/app/login/actions"
 
 export function SignIn() {
+  const [usernameError, setUsernameError] = useState("")
+
   return (
     <form
       className="mx-auto w-full max-w-sm space-y-5 rounded-xl border border-gray-200 bg-white p-6"
-        action={async (formData) => {
-        "use server";
-
-        try {
-            await signIn("credentials", {
-                email: formData.get("email"),
-                password: formData.get("password"),
-                redirectTo: "/admin",
-                });
-        } catch (error) {
-            if (
-            error instanceof AuthError &&
-            error.type === "CredentialsSignin"
-            ) {
-            redirect("/login?error=credentials");
-            }
-
-            throw error;
-        }
-        }}
+      action={submitEmployeeLogin}
     >
-      <h1 className="text-2xl font-semibold text-gray-900">Sign In</h1>
+      <h1 className="text-2xl font-semibold text-gray-900">Employee Login</h1>
 
       <div className="space-y-2">
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email
+        <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+          Username
         </label>
         <input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          placeholder="you@example.com"
+          id="username"
+          name="username"
+          type="text"
+          autoComplete="username"
           required
+          onInvalid={() => setUsernameError("Username is required.")}
+          onChange={() => setUsernameError("")}
+          aria-invalid={Boolean(usernameError)}
+          aria-describedby={usernameError ? "username-error" : undefined}
           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
         />
+        {usernameError ? (
+          <p id="username-error" className="text-sm text-red-600" role="alert">
+            {usernameError}
+          </p>
+        ) : null}
       </div>
 
       <div className="space-y-2">
