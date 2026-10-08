@@ -16,8 +16,10 @@ export const barbers = pgTable("barbers", {
   image: text("image"),
   description: text("description"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  phone: varchar("phone", { length: 20 }),
+  booksyUrl: text("booksy_url"),
+  email: varchar("email", { length: 255 }).unique(),
 });
-
 
 export const shopItems = pgTable("shop_items", {
   id: uuid("id").defaultRandom().primaryKey(),

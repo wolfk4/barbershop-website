@@ -1,4 +1,3 @@
-
 "use client";
  
 import { useEffect, useState } from "react";
@@ -7,6 +6,7 @@ type Profile = {
   fullName: string;
   bio: string;
   phone: string;
+  booksyUrl: string;
 };
  
 type Errors = Partial<Record<keyof Profile, string>>;
@@ -14,6 +14,24 @@ type Errors = Partial<Record<keyof Profile, string>>;
 type Status = { type: "success" | "error"; text: string } | null;
  
 const PROFILE_URL = "/api/employee/profile";
+ 
+// Barbers can paste the whole <script> tag from Booksy because this pulls out just the URL
+function extractBooksySrc(value: string): string {
+  const match = value.match(/src=["']([^"']+)["']/i);
+  return match ? match[1] : value;
+}
+ 
+function isBooksyUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return (
+      url.protocol === "https:" &&
+      (url.hostname === "booksy.com" || url.hostname.endsWith(".booksy.com"))
+    );
+  } catch {
+    return false;
+  }
+}
  
 function validate(form: Profile): Errors {
   const errors: Errors = {};
@@ -28,17 +46,22 @@ function validate(form: Profile): Errors {
     errors.phone = "Enter a valid 10-digit phone number.";
   }
  
+  // if they fill it in it has to be a real Booksy link
+  if (form.booksyUrl.trim() && !isBooksyUrl(form.booksyUrl.trim())) {
+    errors.booksyUrl = "That doesn't look like a Booksy link. Paste the code from your Booksy settings.";
+  }
+ 
   return errors;
 }
  
 export default function EmployeeProfileForm() {
-  const [form, setForm] = useState<Profile>({ fullName: "", bio: "", phone: "" });
+  const [form, setForm] = useState<Profile>({ fullName: "", bio: "", phone: "", booksyUrl: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<Status>(null);
  
-  // Load the employee's current info when the page loads
+  // Load the employees current info when the page loads
   useEffect(() => {
     let cancelled = false;
  
@@ -53,6 +76,7 @@ export default function EmployeeProfileForm() {
             fullName: data.fullName ?? "",
             bio: data.bio ?? "",
             phone: data.phone ?? "",
+            booksyUrl: data.booksyUrl ?? "",
           });
         }
       } catch {
@@ -71,7 +95,8 @@ export default function EmployeeProfileForm() {
   }, []);
  
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const { name, value } = e.target;
+    const { name } = e.target;
+    const value = name === "booksyUrl" ? extractBooksySrc(e.target.value) : e.target.value;
     setForm((prev) => ({ ...prev, [name]: value }));
     // Clear the error for this field once they start fixing it
     setErrors((prev) => ({ ...prev, [name]: undefined }));
@@ -96,6 +121,7 @@ export default function EmployeeProfileForm() {
           fullName: form.fullName.trim(),
           bio: form.bio.trim(),
           phone: form.phone.trim(),
+          booksyUrl: form.booksyUrl.trim(),
         }),
       });
       if (!res.ok) throw new Error("Failed to save profile");
@@ -177,6 +203,28 @@ export default function EmployeeProfileForm() {
           onChange={handleChange}
           className={inputClass(false)}
         />
+      </div>
+ 
+      <div>
+        <label htmlFor="booksyUrl" className="mb-1 block text-sm font-medium">
+          Booksy widget link
+        </label>
+        <input
+          id="booksyUrl"
+          name="booksyUrl"
+          type="text"
+          placeholder="Paste the code from your Booksy settings"
+          value={form.booksyUrl}
+          onChange={handleChange}
+          aria-invalid={!!errors.booksyUrl}
+          aria-describedby={errors.booksyUrl ? "booksyUrl-error" : undefined}
+          className={inputClass(!!errors.booksyUrl)}
+        />
+        {errors.booksyUrl && (
+          <p id="booksyUrl-error" className="mt-1 text-sm text-red-600">
+            {errors.booksyUrl}
+          </p>
+        )}
       </div>
  
       {status && (
