@@ -1,12 +1,14 @@
 "use client";
 
-import { ImagePlus, Upload } from "lucide-react";
+import { ImagePlus, Trash2, Upload } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import EmployeeProfileForm from "@/components/EmployeeProfileForm";
+import { PORTFOLIO_SLOT_COUNT } from "@/lib/portfolio";
 
 type PortfolioImage = {
   id: string;
+  slot: number;
   contentType: string;
   createdAt: string;
   url: string;
@@ -42,6 +44,8 @@ export default function EmployeePortfolioManager() {
   const [images, setImages] = useState<PortfolioImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [status, setStatus] = useState<Status>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -72,7 +76,7 @@ export default function EmployeePortfolioManager() {
 
   async function handleUpload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file || selectedSlot === null) return;
     event.target.value = "";
 
     if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
@@ -88,6 +92,7 @@ export default function EmployeePortfolioManager() {
     setStatus(null);
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("slot", String(selectedSlot));
 
     try {
       const response = await fetch(IMAGES_URL, {
@@ -114,7 +119,37 @@ export default function EmployeePortfolioManager() {
     }
   }
 
-  const slots = Array.from({ length: Math.max(6, images.length) }, (_, index) => images[index] ?? null);
+  const slots = Array.from(
+    { length: PORTFOLIO_SLOT_COUNT },
+    (_, index) => images.find((image) => image.slot === index) ?? null,
+  );
+  const selectedImage = selectedSlot === null ? null : slots[selectedSlot];
+
+  async function handleDelete() {
+    if (!selectedImage) return;
+    if (!window.confirm("Delete this photo? This can't be undone.")) return;
+
+    setDeleting(true);
+    setStatus(null);
+
+    try {
+      const response = await fetch(`${IMAGES_URL}/${selectedImage.id}`, { method: "DELETE" });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error ?? "Couldn't delete this image.");
+      }
+
+      setImages((previous) => previous.filter((image) => image.id !== selectedImage.id));
+      setStatus({ type: "success", text: "Work photo deleted." });
+    } catch (error) {
+      setStatus({
+        type: "error",
+        text: error instanceof Error ? error.message : "Couldn't delete this image.",
+      });
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   return (
     <div className="grid items-start gap-10 lg:grid-cols-[minmax(260px,0.8fr)_minmax(0,1.5fr)]">
@@ -157,9 +192,15 @@ export default function EmployeePortfolioManager() {
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           {slots.map((image, index) => (
-            <div
+            <button
+              type="button"
               key={image?.id ?? `empty-${index}`}
-              className="relative aspect-[4/5] overflow-hidden rounded-md border border-gray-200 bg-gray-100"
+              onClick={() => setSelectedSlot(index)}
+              aria-pressed={selectedSlot === index}
+              aria-label={image ? `Select work photo ${index + 1}` : `Select empty slot ${index + 1}`}
+              className={`relative aspect-[4/5] overflow-hidden rounded-md border-2 bg-gray-100 ${
+                selectedSlot === index ? "border-black" : "border-gray-200"
+              }`}
             >
               {image ? (
                 <Image
@@ -176,7 +217,7 @@ export default function EmployeePortfolioManager() {
                   <span className="text-xs">Photo slot</span>
                 </div>
               )}
-            </div>
+            </button>
           ))}
         </div>
 
@@ -186,7 +227,7 @@ export default function EmployeePortfolioManager() {
           </output>
         )}
 
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-3">
           <input
             ref={fileInputRef}
             type="file"
@@ -198,11 +239,20 @@ export default function EmployeePortfolioManager() {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
+            disabled={uploading || deleting || selectedSlot === null || selectedImage !== null}
             className="inline-flex items-center gap-2 rounded-md bg-black px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Upload aria-hidden="true" className="size-4" />
             {uploading ? "Uploading..." : "Upload photo"}
+          </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={uploading || deleting || selectedImage === null}
+            className="inline-flex items-center gap-2 rounded-md border border-black px-4 py-2.5 text-sm font-medium text-black transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <Trash2 aria-hidden="true" className="size-4" />
+            {deleting ? "Deleting..." : "Delete photo"}
           </button>
         </div>
       </section>

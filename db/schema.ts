@@ -1,4 +1,4 @@
-import { index, integer, pgTable, serial, text, timestamp, uniqueIndex, varchar, uuid } from "drizzle-orm/pg-core";
+import { index, integer, pgTable, serial, smallint, text, timestamp, uniqueIndex, varchar, uuid } from "drizzle-orm/pg-core";
 
 
 
@@ -29,6 +29,7 @@ export const portfolioImages = pgTable("portfolio_images", {
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
     objectKey: text("object_key").notNull().unique(),
+    slot: smallint("slot"),
     contentType: varchar("content_type", { length: 100 }).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
@@ -36,6 +37,7 @@ export const portfolioImages = pgTable("portfolio_images", {
   },
   (table) => ({
     ownerUserIdIdx: index("portfolio_images_owner_user_id_idx").on(table.ownerUserId),
+    ownerSlotUnique: uniqueIndex("portfolio_images_owner_slot_unique").on(table.ownerUserId, table.slot),
   }),
 );
 
