@@ -1,4 +1,4 @@
-import { integer, pgTable, serial, text, timestamp, varchar, uuid } from "drizzle-orm/pg-core";
+import { index, integer, pgTable, serial, text, timestamp, uniqueIndex, varchar, uuid } from "drizzle-orm/pg-core";
 
 
 
@@ -18,7 +18,26 @@ export const barbers = pgTable("barbers", {
   image: text("image"),
   description: text("description"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+  userId: integer("user_id").references(() => usersTable.id, { onDelete: "set null" }),
+}, (table) => ({
+  userIdUniqueIdx: uniqueIndex("barbers_user_id_unique").on(table.userId),
+}));
+
+export const portfolioImages = pgTable("portfolio_images", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    ownerUserId: integer("owner_user_id")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "cascade" }),
+    objectKey: text("object_key").notNull().unique(),
+    contentType: varchar("content_type", { length: 100 }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => ({
+    ownerUserIdIdx: index("portfolio_images_owner_user_id_idx").on(table.ownerUserId),
+  }),
+);
 
 
 export const shopItems = pgTable("shop_items", {
