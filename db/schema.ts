@@ -39,7 +39,6 @@ export const portfolioImages = pgTable("portfolio_images", {
   }),
 );
 
-
 export const shopItems = pgTable("shop_items", {
   id: uuid("id").defaultRandom().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),

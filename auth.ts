@@ -5,6 +5,7 @@ import Credentials from "next-auth/providers/credentials"
 import { db } from "./db/db"
 import { usersTable } from "./db/schema"
 import { eq } from "drizzle-orm"
+import { sqlInjectCheck } from "@/lib/sql-inject-check"
 
 //Later use bcryptjs to hash and compare passwords for better security.
 // import { compare } from "bcryptjs"
@@ -21,10 +22,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
       },
       providers: [
         Credentials({
+            credentials: {
+              username: { label: "Username", type: "text" },
+              password: { label: "Password", type: "password" },
+            },
             async authorize(credentials) {
-              const email =
-                typeof credentials?.email === "string"
-                  ? credentials.email.trim()
+              const username =
+                typeof credentials?.username === "string"
+                  ? credentials.username
                   : "";
 
               const password =
@@ -32,15 +37,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
                   ? credentials.password
                   : "";
 
-              if (!email || !password) {
-                console.log("Login failed: missing email or password");
+              if (!sqlInjectCheck(username)) {
+                console.log("Login failed: invalid username characters");
                 return null;
               }
 
+              if (!password) {
+                console.log("Login failed: missing password");
+                return null;
+              }
+
+              // User accounts currently store the login identifier in the email column.
               const [user] = await db
                 .select()
                 .from(usersTable)
-                .where(eq(usersTable.email, email))
+                .where(eq(usersTable.email, username))
                 .limit(1);
 
               if (!user) {
