@@ -7,8 +7,7 @@ import { redirect } from "next/navigation"
 export async function submitEmployeeLogin(formData: FormData) {
   try {
     await signIn("credentials", {
-      // The current users table stores the login identifier in its email column.
-      email: formData.get("username"),
+      username: formData.get("username"),
       password: formData.get("password"),
       redirectTo: "/admin",
     })
