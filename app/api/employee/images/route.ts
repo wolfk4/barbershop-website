@@ -4,7 +4,8 @@ import { auth } from "@/auth";
 import { db } from "@/db/drizzle";
 import { barbers, portfolioImages } from "@/db/schema";
 import { s3, portfolioBucket } from "@/lib/s3-client";
-import { desc, eq } from "drizzle-orm";
+import { PORTFOLIO_SLOT_COUNT } from "@/lib/portfolio";
+import { and, asc, eq, isNotNull } from "drizzle-orm";
 
 const maxBytes = 5 * 1024 * 1024;
 const allowedTypes = {
@@ -31,13 +32,14 @@ export async function GET() {
     const images = await db
       .select({
         id: portfolioImages.id,
+        slot: portfolioImages.slot,
         objectKey: portfolioImages.objectKey,
         contentType: portfolioImages.contentType,
         createdAt: portfolioImages.createdAt,
       })
       .from(portfolioImages)
-      .where(eq(portfolioImages.ownerUserId, ownerUserId))
-      .orderBy(desc(portfolioImages.createdAt));
+      .where(and(eq(portfolioImages.ownerUserId, ownerUserId), isNotNull(portfolioImages.slot)))
+      .orderBy(asc(portfolioImages.slot));
 
     const [barber] = await db
       .select({ heroImage: barbers.image })
@@ -86,7 +88,11 @@ export async function POST(request: Request) {
 
     const formData = await request.formData();
     const file = formData.get("file");
+    const slot = Number(formData.get("slot"));
 
+    if (!Number.isInteger(slot) || slot < 0 || slot >= PORTFOLIO_SLOT_COUNT) {
+      return Response.json({ error: "Choose one of the six photo slots." }, { status: 400 });
+    }
     if (!(file instanceof File)) {
       return Response.json({ error: "Choose an image file." }, { status: 400 });
     }
@@ -97,6 +103,15 @@ export async function POST(request: Request) {
         { error: "Use a JPG or PNG image up to 5 MB." },
         { status: 400 }
       );
+    }
+
+    const [occupied] = await db
+      .select({ id: portfolioImages.id })
+      .from(portfolioImages)
+      .where(and(eq(portfolioImages.ownerUserId, ownerUserId), eq(portfolioImages.slot, slot)))
+      .limit(1);
+    if (occupied) {
+      return Response.json({ error: "That slot already has a photo. Delete it first." }, { status: 409 });
     }
 
     const objectKey = `portfolio/${ownerUserId}/${crypto.randomUUID()}${extension}`;
@@ -113,6 +128,7 @@ export async function POST(request: Request) {
       .insert(portfolioImages)
       .values({
         ownerUserId,
+        slot,
         objectKey,
         contentType: file.type,
       })

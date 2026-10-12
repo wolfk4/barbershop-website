@@ -8,7 +8,8 @@ import Footer from "@/components/footer";
 import { db } from "@/db/drizzle";
 import { barbers, portfolioImages } from "@/db/schema";
 import { portfolioBucket, s3 } from "@/lib/s3-client";
-import { desc, eq } from "drizzle-orm";
+import { PORTFOLIO_SLOT_COUNT } from "@/lib/portfolio";
+import { and, asc, eq, isNotNull } from "drizzle-orm";
 
  
 type BarberBioPageProps = {
@@ -25,21 +26,26 @@ export default async function BarberBioPage({ params }: BarberBioPageProps) {
 
   const images = barber.userId
     ? await db
-        .select({ objectKey: portfolioImages.objectKey })
+        .select({ slot: portfolioImages.slot, objectKey: portfolioImages.objectKey })
         .from(portfolioImages)
-        .where(eq(portfolioImages.ownerUserId, barber.userId))
-        .orderBy(desc(portfolioImages.createdAt))
-        .limit(6)
+        .where(and(eq(portfolioImages.ownerUserId, barber.userId), isNotNull(portfolioImages.slot)))
+        .orderBy(asc(portfolioImages.slot))
+        .limit(PORTFOLIO_SLOT_COUNT)
     : [];
 
-  const portfolio = await Promise.all(
-    images.map(async ({ objectKey }) => ({
+  const signedImages = await Promise.all(
+    images.map(async ({ slot, objectKey }) => ({
+      slot,
       url: await getSignedUrl(
         s3,
         new GetObjectCommand({ Bucket: portfolioBucket, Key: objectKey }),
         { expiresIn: 3600 },
       ),
     })),
+  );
+  const portfolio = Array.from(
+    { length: PORTFOLIO_SLOT_COUNT },
+    (_, index) => signedImages.find((image) => image.slot === index) ?? null,
   );
 
  
@@ -93,10 +99,10 @@ export default async function BarberBioPage({ params }: BarberBioPageProps) {
             </div>
 
             <section aria-label={`${barber.name}'s work portfolio`}>
-              {portfolio.length > 0 ? (
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {portfolio.map((image, index) => (
-                    <div key={image.url} className="relative aspect-[4/5] overflow-hidden bg-gray-200">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {portfolio.map((image, index) => (
+                  <div key={image?.url ?? `empty-${index}`} className="relative aspect-[4/5] overflow-hidden bg-gray-200">
+                    {image && (
                       <Image
                         src={image.url}
                         alt={`${barber.name}'s work ${index + 1}`}
@@ -105,14 +111,10 @@ export default async function BarberBioPage({ params }: BarberBioPageProps) {
                         sizes="(max-width: 640px) 50vw, 30vw"
                         className="object-cover"
                       />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex min-h-48 items-center justify-center bg-gray-200 px-6 text-center text-sm text-gray-600">
-                  No photos yet.
-                </div>
-              )}
+                    )}
+                  </div>
+                ))}
+              </div>
             </section>
           </div>
         </div>
