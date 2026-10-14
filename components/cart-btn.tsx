@@ -46,6 +46,7 @@ export function AddToCartButton({
   }
 
   return (
+    <div className="mt-6 w-full">
     <Button
       className="mt-6 w-full"
       onClick={addToCart}
@@ -53,5 +54,33 @@ export function AddToCartButton({
     >
       {loading ? "Adding..." : "Add to Cart"}
     </Button>
+     <form
+  action="/api/stripe/checkout"
+  method="POST"
+  className="mt-4 flex w-full max-w-sm flex-col gap-3"
+>
+  <input type="hidden" name="title" value={"Hoodie"} />
+
+  <label htmlFor="customer_name">Your name</label>
+  <input
+    id="customer_name"
+    name="customer_name"
+    type="text"
+    autoComplete="name"
+    required
+    minLength={2}
+    maxLength={120}
+    className="rounded border px-3 py-2"
+  />
+
+    <Button
+      className="mt-6 w-full bg-[#635BFF]"
+      onClick={addToCart}
+      type="submit"
+    >
+      Checkout with Stripe
+    </Button>
+</form>
+    </div>
   )
 }

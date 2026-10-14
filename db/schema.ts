@@ -47,6 +47,7 @@ export const shopItems = pgTable("shop_items", {
   image: text("image"),
   price: integer("price").notNull(),
   stockBySize: text("stock_by_size"),
+  stripeLink: varchar("stripe_link", { length: 255 }),
   description: text("description"),
   moreInfo: text("more_info"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -75,6 +76,7 @@ export const orders = pgTable("orders", {
   total: integer("total").notNull(),
   status: varchar("status", { length: 20 }).default("placed").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  stripeCheckoutSessionId: varchar("stripe_checkout_session_id", { length: 255 }),
 });
 
 export const orderItems = pgTable("order_items", {
