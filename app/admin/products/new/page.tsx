@@ -17,7 +17,6 @@ async function page() {
       <div className="min-h-screen bg-gray-100 dark:bg-black py-8">
         <div className="max-w-xl mx-auto">
           <Link href="/admin" className="text-sm underline">← Back</Link>
-          <h2 className="text-xl my-4">Create Product</h2>
           <CreateProductForm />
         </div>
       </div>
