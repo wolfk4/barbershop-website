@@ -51,6 +51,7 @@ export const shopItems = pgTable("shop_items", {
   description: text("description"),
   moreInfo: text("more_info"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  deletedAt: timestamp("deleted_at"),
 });
 
 export const productBySize = pgTable("product_by_size", {
