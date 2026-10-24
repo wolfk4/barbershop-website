@@ -29,6 +29,12 @@ async function page() {
           >
             Delete a product
           </Link>
+          <Link
+            href="/admin/orders"
+            className="bg-black text-white rounded p-2 text-center"
+          >
+            Manage orders
+          </Link>
           <SignOut />
         </div>
       </div>
