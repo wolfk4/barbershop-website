@@ -1,6 +1,5 @@
 import Footer from "@/components/footer"
 import Header from "@/components/header"
-import { TypingAnimation } from "@/components/ui/typing-animation"
 
 function Page() {
   const hours = [
@@ -24,13 +23,9 @@ function Page() {
       <div className="w-full flex mx-auto max-w-[1200px] pt-20 gap-10 px-6">
         
         <div className="w-1/2 flex flex-col justify-center">
-              <TypingAnimation
-              className="text-xl mb-2"
-              words={["5411 San Juan Ave, Citrus Heights, CA 95610"]}
-              typeSpeed={50}
-              pauseDelay={2000}
-              loop
-            />
+          <p className="text-xl mb-2">
+            5411 San Juan Ave, Citrus Heights, CA 95610
+          </p>
 
           <p className="text-xl mb-2">
             Phone: (916) 844-7020
