@@ -3,9 +3,8 @@ import Header from "@/components/header"
 import { CreateProductForm } from "./components/form"
 import { auth } from "@/auth"
 import { SignOut } from "@/components/signout-btn"
-
-
-
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 async function page() {
    const session = await auth()
@@ -25,6 +24,13 @@ async function page() {
               </div>
               <div className="max-w-xl mx-auto mt-8">
                 <SignOut />
+              </div>
+              <div className="max-w-xl mx-auto mt-8">
+                <Link href="/admin/gallery" className="text-blue-500 hover:underline">
+                <Button>
+                  Go to Gallery Management
+                </Button>
+                </Link>
               </div>
             </div>
         </div>

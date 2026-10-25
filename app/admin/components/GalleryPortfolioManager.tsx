@@ -109,70 +109,85 @@ export default function AdminGalleryManager() {
   }, []);
 
   async function handleUpload(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
+  const file = event.target.files?.[0];
+  event.target.value = "";
 
-    if (!file || !selection || busy) return;
+  if (!file || !selection || busy) return;
 
-    if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
-      setStatus({
-        type: "error",
-        text: "Choose a JPG, PNG, or WebP image.",
-      });
-      return;
-    }
+  if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+    setStatus({
+      type: "error",
+      text: "Choose a JPG, PNG, or WebP image.",
+    });
+    return;
+  }
 
-    if (file.size > MAX_FILE_SIZE) {
-      setStatus({
-        type: "error",
-        text: "Images must be 5 MB or smaller.",
-      });
-      return;
-    }
+  if (file.size > MAX_FILE_SIZE) {
+    setStatus({
+      type: "error",
+      text: "Images must be 5 MB or smaller.",
+    });
+    return;
+  }
 
-    setUploading(true);
-    setStatus(null);
+  setUploading(true);
+  setStatus(null);
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("section", selection.section);
-    formData.append("slot", String(selection.slot));
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("section", selection.section);
+  formData.append("slot", String(selection.slot));
 
-    try {
-      const response = await fetch(IMAGES_URL, {
+  try {
+    // Replace imagesid with your actual ID variable.
+    const response = await fetch(
+      `/api/gallery/images`,
+      {
         method: "POST",
         body: formData,
-      });
+      },
+    );
 
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.error ?? "Couldn't upload this image.");
-      }
+    if (!response.ok) {
+      const text = await response.text();
+      let message = `Couldn't upload this image (${response.status}).`;
 
       try {
-        setImages(await fetchImages());
-        setStatus({
-          type: "success",
-          text: "Gallery updated successfully.",
-        });
+        const result = JSON.parse(text);
+        if (typeof result.error === "string") {
+          message = result.error;
+        }
       } catch {
-        setStatus({
-          type: "error",
-          text: "Image saved, but previews couldn't refresh. Reload the page.",
-        });
+        console.error("Unexpected upload response:", response.status, text);
       }
-    } catch (error) {
+
+      throw new Error(message);
+    }
+
+    try {
+      setImages(await fetchImages());
+      setStatus({
+        type: "success",
+        text: "Gallery updated successfully.",
+      });
+    } catch {
       setStatus({
         type: "error",
-        text:
-          error instanceof Error
-            ? error.message
-            : "Update failed. Please try again.",
+        text: "Image saved, but previews couldn't refresh. Reload the page.",
       });
-    } finally {
-      setUploading(false);
     }
+  } catch (error) {
+    setStatus({
+      type: "error",
+      text:
+        error instanceof Error
+          ? error.message
+          : "Update failed. Please try again.",
+    });
+  } finally {
+    setUploading(false);
   }
+}
 
   async function handleDelete() {
     if (!selectedImage || busy) return;
