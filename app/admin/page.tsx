@@ -3,6 +3,7 @@ import Header from "@/components/header"
 import { CreateProductForm } from "./components/form"
 import { auth } from "@/auth"
 import { SignOut } from "@/components/signout-btn"
+import { EmployeeList } from "./components/employee-list"
 
 
 
@@ -16,9 +17,10 @@ async function page() {
         <Header />
         <div className="items-center justify-center min-h-screen bg-gray-100 dark:bg-black">
             <h2>Welcome, {session.user.name}!</h2>
-
-
             <div>
+              <div className="max-w-xl mx-auto">
+                <EmployeeList />
+              </div>
               <div className="max-w-xl mx-auto">
                 <h2>Create Products</h2>
                 <CreateProductForm />
