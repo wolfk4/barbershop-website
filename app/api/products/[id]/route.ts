@@ -1,6 +1,6 @@
 import { db } from "@/db/drizzle";
 import { productBySize, shopItems } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 
 export async function GET(
   _request: Request,
@@ -8,8 +8,7 @@ export async function GET(
   const { id } = await params;
   
   // Fetch the product by ID
-  const [product] = await db.select().from(shopItems).where(eq(shopItems.id, id)).limit(1);
-
+  const [product] = await db.select().from(shopItems).where(and(eq(shopItems.id, id), isNull(shopItems.deletedAt))).limit(1);
   if (!product) {
     return Response.json({ error: "Product not found" }, { status: 404 });
   }
