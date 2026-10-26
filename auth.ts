@@ -7,8 +7,16 @@ import { usersTable } from "./db/schema"
 import { eq } from "drizzle-orm"
 import { sqlInjectCheck } from "@/lib/sql-inject-check"
 
-//Later use bcryptjs to hash and compare passwords for better security.
-// import { compare } from "bcryptjs"
+import { compare } from "bcryptjs"
+
+const BCRYPT_HASH_PATTERN = /^\$2[aby]\$\d{2}\$/
+
+async function verifyPassword(input: string, stored: string) {
+  if (BCRYPT_HASH_PATTERN.test(stored)) {
+    return compare(input, stored)
+  }
+  return input === stored
+}
 
 
 export const { handlers, auth, signIn, signOut } = NextAuth(() => {
@@ -59,7 +67,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
                 return null;
               }
 
-              if (password !== user.password) {
+              if (!(await verifyPassword(password, user.password))) {
                 console.log("Login failed: password mismatch");
                 return null;
               }

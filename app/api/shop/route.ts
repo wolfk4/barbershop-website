@@ -2,6 +2,8 @@
 
 import { db } from "@/db/drizzle";
 import { shopItems } from "@/db/schema";
+import { isNull } from "drizzle-orm";
+const items = await db.select().from(shopItems).where(isNull(shopItems.deletedAt));
 
 
 export async function GET() {
