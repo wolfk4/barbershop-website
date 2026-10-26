@@ -1,6 +1,5 @@
 import Footer from "@/components/footer"
 import Header from "@/components/header"
-import { CreateProductForm } from "./components/form"
 import { auth } from "@/auth"
 import { SignOut } from "@/components/signout-btn"
 import { EmployeeList } from "./components/employee-list"
@@ -9,9 +8,11 @@ import { EmployeeList } from "./components/employee-list"
 
 
 async function page() {
-   const session = await auth()
+  const session = await auth()
 
-   if (!session?.user) return null
+  if (!session?.user) redirect("/login")
+  if (session.user.role !== "admin") redirect("/")
+
   return (
     <div>
         <Header />
@@ -30,7 +31,8 @@ async function page() {
               </div>
             </div>
         </div>
-        <Footer />
+      </div>
+      <Footer />
     </div>
   )
 }
