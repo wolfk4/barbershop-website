@@ -2,9 +2,8 @@ import Footer from "@/components/footer"
 import Header from "@/components/header"
 import { auth } from "@/auth"
 import { SignOut } from "@/components/signout-btn"
-import { EmployeeList } from "./components/employee-list"
-import { CreateEmployeeForm } from "./components/create-employee"
-
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 async function page() {
   const session = await auth()
@@ -32,6 +31,13 @@ async function page() {
               </div>
               <div className="max-w-xl mx-auto mt-8">
                 <SignOut />
+              </div>
+              <div className="max-w-xl mx-auto mt-8">
+                <Link href="/admin/gallery" className="text-blue-500 hover:underline">
+                <Button>
+                  Go to Gallery Management
+                </Button>
+                </Link>
               </div>
             </div>
         </div>

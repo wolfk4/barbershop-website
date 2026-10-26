@@ -40,6 +40,16 @@ export const portfolioImages = pgTable("portfolio_images", {
     ownerSlotUnique: uniqueIndex("portfolio_images_owner_slot_unique").on(table.ownerUserId, table.slot),
   }),
 );
+export const galleryImages = pgTable("gallery_images", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    objectKey: text("object_key").notNull().unique(),
+    slot: smallint("slot"),
+    contentType: varchar("content_type", { length: 100 }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  }
+);
 
 export const shopItems = pgTable("shop_items", {
   id: uuid("id").defaultRandom().primaryKey(),

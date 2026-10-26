@@ -13,3 +13,4 @@ export const s3 = new S3Client({
 });
 
 export const portfolioBucket = process.env.PORTFOLIO_BUCKET!;
+export const galleryBucket = process.env.GALLERY_BUCKET!;
