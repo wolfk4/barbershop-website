@@ -14,9 +14,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Kaiizen Cutz | Sacramento Barbershop",
+  title: "Kaizen Cutz | Sacramento Barbershop",
   description:
-    "Kaiizen Cutz is a Sacramento barbershop offering modern haircuts, fades, beard trims, and grooming services in a clean and professional environment.",
+    "Kaizen Cutz is a Sacramento barbershop offering modern haircuts, fades, beard trims, and grooming services in a clean and professional environment.",
 };
 
 export default function RootLayout({
@@ -26,7 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${mono.variable} antialiased`}>
+      <body className={`${inter.variable} ${mono.variable} font-sans antialiased`}>
         <main className="pb-12">
           {children}
           <Toaster />
