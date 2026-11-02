@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { submitEmployeeLogin } from "@/app/login/actions"
+import PasswordResetLink from "@/components/PasswordResetLink"
 
 export function SignIn() {
   const [usernameError, setUsernameError] = useState("")
@@ -66,6 +67,8 @@ export function SignIn() {
       >
         Sign In
       </button>
+
+      <PasswordResetLink />
     </form>
   );
 }
