@@ -65,3 +65,27 @@ export async function sendOrderConfirmation(order: OrderEmail) {
   }
 }
  
+export async function sendPasswordResetEmail(to: string, name: string, link: string) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  const html = `
+    <div style="font-family:Arial,sans-serif; max-width:500px; margin:auto;">
+      <h2>Reset your password</h2>
+      <p>Hi ${escapeHtml(name)},</p>
+      <p>Someone asked to reset the password for your Kaizen Cutz account. Click the link below to pick a new one.</p>
+      <p><a href="${link}" style="display:inline-block; padding:10px 16px; background:#2563eb; color:#fff; text-decoration:none; border-radius:6px;">Reset password</a></p>
+      <p style="color:#666; font-size:12px;">This link expires in 1 hour. If you didn't ask for this you can ignore this email.</p>
+      <p>- Kaizen Cutz</p>
+    </div>`;
+
+  const { error } = await resend.emails.send({
+    from: process.env.EMAIL_FROM ?? "Kaizen Cutz <onboarding@resend.dev>",
+    to,
+    subject: "Reset your Kaizen Cutz password",
+    html,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
