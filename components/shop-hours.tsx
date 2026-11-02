@@ -59,7 +59,7 @@ export default function ShopHours() {
         )}
  
         {/* hours list */}
-        <ul className="mb-8 w-full rounded-2xl border border-gray-200 p-4 text-left shadow-sm">
+        <ul className="mb-8 w-full rounded-none border border-gray-200 p-4 text-left shadow-sm">
           {hours.map((h, i) => {
             const isToday = i === today
             return (

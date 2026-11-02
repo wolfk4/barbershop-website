@@ -1,146 +1,196 @@
 import Footer from "@/components/footer"
 import Header from "@/components/header"
-import Link from "next/link"
-import { MapPin, Phone, Mail, Clock } from "lucide-react"
- 
-// re-render each request so "today" and "open now" stay correct
-export const dynamic = "force-dynamic"
- 
+import { MapPin, Phone, Mail, Clock, ArrowUpRight } from "lucide-react"
+
 const ADDRESS = "5411 San Juan Ave, Citrus Heights, CA 95610"
 const PHONE = "(916) 844-7020"
-const EMAIL = "info@barbershop.com" // TODO: real shop email
-const BOOKING_URL = "/" // TODO: wherever the Booksy widget lives
- 
-// open/close in 24h time
-const hours = [
-  { day: "Sunday", open: 10, close: 17 },
-  { day: "Monday", open: 10, close: 18 },
-  { day: "Tuesday", open: 10, close: 18 },
-  { day: "Wednesday", open: 10, close: 18 },
-  { day: "Thursday", open: 10, close: 18 },
-  { day: "Friday", open: 10, close: 18 },
-  { day: "Saturday", open: 9, close: 17 },
-]
- 
-function formatHour(h: number) {
-  const suffix = h >= 12 ? "PM" : "AM"
-  const hour = h % 12 === 0 ? 12 : h % 12
-  return `${hour}:00 ${suffix}`
-}
- 
-// current day + hour in the shop's timezone
-function getShopTime() {
-  const now = new Date(
-    new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
-  )
-  return { dayIndex: now.getDay(), hour: now.getHours() + now.getMinutes() / 60 }
-}
- 
-function Page() {
-  const { dayIndex, hour } = getShopTime()
-  const today = hours[dayIndex]
-  const isOpen = hour >= today.open && hour < today.close
+const EMAIL = "info@barbershop.com" // Replace with the shop email
+
+export default function Page() {
   const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ADDRESS)}`
- 
-  const contactItems = [
-    { icon: MapPin, label: "Address", value: ADDRESS, href: mapsLink },
-    { icon: Phone, label: "Phone", value: PHONE, href: `tel:${PHONE.replace(/\D/g, "")}` },
-    { icon: Mail, label: "Email", value: EMAIL, href: `mailto:${EMAIL}` },
-  ]
- 
+
+  const inputClassName =
+    "w-full rounded-none border border-gray-300 bg-white px-4 py-3 text-base placeholder:text-gray-400 focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
+
   return (
-    <div className="font-sans bg-white text-black">
+    <div className="bg-white font-sans text-gray-950">
       <Header />
- 
-      {/* title */}
-      <section className="bg-black text-white py-20 px-6 text-center">
-        <p className="uppercase tracking-[0.3em] text-sm text-gray-400 mb-3">
-          Kaizen Cutz
-        </p>
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">Get in Touch</h1>
-        <p className="text-gray-300 max-w-xl mx-auto mb-8">
-          Walk-ins welcome. Book ahead to skip the wait.
-        </p>
-        <Link
-          href={BOOKING_URL}
-          className="inline-block bg-white text-black font-semibold px-8 py-3 rounded-full hover:bg-gray-200 transition"
-        >
-          Book Now
-        </Link>
-      </section>
- 
-      <section className="max-w-300 mx-auto px-6 py-16 grid gap-10 md:grid-cols-2">
-        {/* left side */}
-        <div className="space-y-6">
-          {/* contact cards */}
-          <div className="grid gap-4">
-            {contactItems.map(({ icon: Icon, label, value, href }) => (
-              <a
-                key={label}
-                href={href}
-                target={label === "Address" ? "_blank" : undefined}
-                rel="noopener noreferrer"
-                className="flex items-center gap-4 border rounded-2xl p-5 hover:border-black hover:shadow-md transition"
-              >
-                <div className="bg-black text-white rounded-full p-3 shrink-0">
-                  <Icon className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">{label}</p>
-                  <p className="text-lg font-medium">{value}</p>
-                </div>
-              </a>
-            ))}
+
+      <main>
+        {/* Hero */}
+        <section className="bg-gray-950 px-6 py-16 text-white sm:py-24">
+          <div className="mx-auto max-w-6xl text-center">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.3em] text-gray-400">
+              Kaizen Cutz
+            </p>
+
+            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
+              Get in Touch
+            </h1>
+
+            <p className="mx-auto mt-5 max-w-md text-base leading-7 text-gray-300">
+              Walk-ins welcome. Book ahead to skip the wait.
+              We look forward to seeing you.
+            </p>
+
+            <a
+              href="tel:+19168447020"
+              className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-black transition hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            >
+              <Phone size={16} aria-hidden="true" />
+              Call Us
+            </a>
           </div>
- 
-          {/* hours */}
-          <div className="border rounded-2xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-semibold flex items-center gap-2">
-                <Clock className="w-6 h-6" /> Hours
-              </h2>
-              <span
-                className={`text-sm font-semibold px-3 py-1 rounded-full ${
-                  isOpen ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                }`}
-              >
-                {isOpen ? "Open now" : "Closed now"}
-              </span>
+        </section>
+
+        {/* Contact details */}
+        <section className="border-b border-gray-200 px-6 py-10 sm:py-12">
+          <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-3 md:gap-10">
+            <div className="flex items-start gap-4">
+              <Clock
+                className="mt-1 shrink-0 text-gray-500"
+                size={22}
+                aria-hidden="true"
+              />
+
+              <div className="min-w-0">
+                <h2 className="text-lg font-semibold">Hours</h2>
+                <div className="mt-3 space-y-1 text-sm leading-6 text-gray-600">
+                  <p>Monday to Friday: 10 AM to 6 PM</p>
+                  <p>Saturday: 9 AM to 5 PM</p>
+                  <p>Sunday: 10 AM to 5 PM</p>
+                </div>
+              </div>
             </div>
- 
-            <ul>
-              {hours.map((h, i) => {
-                const isToday = i === dayIndex
-                return (
-                  <li
-                    key={h.day}
-                    className={`flex justify-between py-3 px-3 rounded-lg ${
-                      isToday ? "bg-black text-white font-semibold" : "border-b last:border-b-0"
-                    }`}
+
+            <div className="flex items-start gap-4">
+              <MapPin
+                className="mt-1 shrink-0 text-gray-500"
+                size={22}
+                aria-hidden="true"
+              />
+
+              <div className="min-w-0">
+                <h2 className="text-lg font-semibold">Visit Us</h2>
+                <a
+                  href={mapsLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 block text-sm leading-6 text-gray-600 hover:text-black hover:underline"
+                >
+                  5411 San Juan Ave
+                  <br />
+                  Citrus Heights, CA 95610
+                </a>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <Phone
+                className="mt-1 shrink-0 text-gray-500"
+                size={22}
+                aria-hidden="true"
+              />
+
+              <div className="min-w-0">
+                <h2 className="text-lg font-semibold">Contact</h2>
+                <div className="mt-3 space-y-2 text-sm leading-6 text-gray-600">
+                  <a
+                    href="tel:+19168447020"
+                    className="block hover:text-black hover:underline"
                   >
-                    <span>{h.day}{isToday && " (Today)"}</span>
-                    <span>{formatHour(h.open)} – {formatHour(h.close)}</span>
-                  </li>
-                )
-              })}
-            </ul>
+                    {PHONE}
+                  </a>
+                  <a
+                    href={`mailto:${EMAIL}`}
+                    className="flex items-start gap-2 hover:text-black hover:underline"
+                  >
+                    <Mail
+                      size={16}
+                      className="mt-1 shrink-0"
+                      aria-hidden="true"
+                    />
+                    <span className="break-words">{EMAIL}</span>
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
- 
-        {/* map */}
-        <div className="rounded-2xl overflow-hidden border shadow-sm min-h-100 md:min-h-full">
-          <iframe
-            src={`https://www.google.com/maps?q=${encodeURIComponent(ADDRESS)}&output=embed`}
-            className="w-full h-full min-h-100"
-            loading="lazy"
-            title="Kaizen Cutz location"
-          />
-        </div>
-      </section>
- 
+        </section>
+
+        {/* Form and map */}
+        <section className="bg-gray-100 px-6 py-12 sm:py-20">
+          <div className="mx-auto grid max-w-6xl items-stretch gap-8 lg:grid-cols-2">
+            <div className="p-6 sm:p-10">
+              <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+                Send Us a Message
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-gray-600">
+                Have a question? Leave us a message below.
+              </p>
+
+              {/* Connect this form to your submission handler. */}
+              <form className="mt-8 space-y-6">
+                <div>
+                  <label
+                    htmlFor="contact-name"
+                    className="mb-2 block text-sm font-medium"
+                  >
+                    Name
+                  </label>
+                  <input
+                    id="contact-name"
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    placeholder="Your name"
+                    required
+                    className={inputClassName}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="contact-message"
+                    className="mb-2 block text-sm font-medium"
+                  >
+                    Message
+                  </label>
+                  <textarea
+                    id="contact-message"
+                    name="message"
+                    rows={6}
+                    placeholder="How can we help?"
+                    required
+                    className={`${inputClassName} block resize-y`}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full rounded-xl bg-gray-950 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+                >
+                  Send Message
+                </button>
+              </form>
+            </div>
+
+            <div className="flex overflow-hidden rounded-none border border-gray-200 bg-white flex-col">
+
+
+              <iframe
+                src={`https://www.google.com/maps?q=${encodeURIComponent(ADDRESS)}&output=embed`}
+                className="min-h-[400px] w-full flex-1 border-0"
+                loading="lazy"
+                title="Kaizen Cutz location"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </section>
+      </main>
+
       <Footer />
     </div>
   )
 }
- 
-export default Page
