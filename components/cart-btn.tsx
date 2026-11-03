@@ -1,86 +1,50 @@
 "use client"
-
+ 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
-
+import { ShoppingBag } from "lucide-react"
+ 
 type AddToCartButtonProps = {
   itemId: string
   size: string
 }
-
-export function AddToCartButton({
-  itemId,
-  size,
-}: AddToCartButtonProps) {
+ 
+export function AddToCartButton({ itemId, size }: AddToCartButtonProps) {
   const [loading, setLoading] = useState(false)
-
+ 
   const addToCart = async () => {
     try {
       setLoading(true)
-
+ 
       const response = await fetch("/api/shop/cart", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          itemId,
-          size,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ itemId, size }),
       })
-
+ 
       if (!response.ok) {
         const result = await response.json()
         throw new Error(result.error ?? "Failed to add item to cart")
       }
-
+ 
       toast.success("Added to cart")
     } catch (error) {
       console.error("Error adding to cart:", error)
-
       toast.error(error instanceof Error ? error.message : "Failed to add item to cart")
     } finally {
       setLoading(false)
     }
   }
-
+ 
   return (
-    <div className="mt-6 w-full">
-    <Button
-      className="mt-6 w-full"
+    <button
+      type="button"
       onClick={addToCart}
       disabled={loading || size === ""}
+      className="mt-6 w-full flex items-center justify-center gap-2 bg-black text-white font-bold uppercase tracking-wide py-4 rounded-full hover:bg-gray-800 transition disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
     >
-      {loading ? "Adding..." : "Add to Cart"}
-    </Button>
-     <form
-  action="/api/stripe/checkout"
-  method="POST"
-  className="mt-4 flex w-full max-w-sm flex-col gap-3"
->
-  <input type="hidden" name="title" value={"Hoodie"} />
-
-  <label htmlFor="customer_name">Your name</label>
-  <input
-    id="customer_name"
-    name="customer_name"
-    type="text"
-    autoComplete="name"
-    required
-    minLength={2}
-    maxLength={120}
-    className="rounded border px-3 py-2"
-  />
-
-    <Button
-      className="mt-6 w-full bg-[#635BFF]"
-      onClick={addToCart}
-      type="submit"
-    >
-      Checkout with Stripe
-    </Button>
-</form>
-    </div>
+      <ShoppingBag className="w-5 h-5" />
+      {loading ? "Adding..." : size === "" ? "Select a Size" : "Add to Cart"}
+    </button>
   )
 }
