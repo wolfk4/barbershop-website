@@ -53,9 +53,6 @@ function Page() {
  
       {/* title */}
       <section className="bg-black text-white py-20 px-6 text-center">
-        <p className="uppercase tracking-[0.3em] text-sm text-gray-400 mb-3">
-          Kaizen Cutz
-        </p>
         <h1 className="text-4xl md:text-6xl font-bold mb-4">Shopping Bag</h1>
         <p className="text-gray-300">
           {loading

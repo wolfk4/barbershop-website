@@ -138,16 +138,16 @@ export default function EmployeeProfileForm() {
   }
  
   const inputBase =
-    "w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black";
+    "w-full rounded-lg border px-4 py-3 text-sm outline-none transition focus:border-black focus:ring-1 focus:ring-black";
   const inputClass = (hasError: boolean) =>
     `${inputBase} ${hasError ? "border-red-500" : "border-gray-300"}`;
  
   return (
-    <form onSubmit={handleSubmit} noValidate className="max-w-lg space-y-5">
-      <h2 className="text-xl font-semibold">Personal Information</h2>
+    <form onSubmit={handleSubmit} noValidate className="space-y-5 rounded-2xl border p-6 md:p-8">
+      <h2 className="text-lg font-extrabold uppercase tracking-widest">Personal Information</h2>
  
       <div>
-        <label htmlFor="fullName" className="mb-1 block text-sm font-medium">
+        <label htmlFor="fullName" className="mb-2 block text-sm font-semibold text-gray-700">
           Full name <span className="text-red-600">*</span>
         </label>
         <input
@@ -169,7 +169,7 @@ export default function EmployeeProfileForm() {
       </div>
  
       <div>
-        <label htmlFor="phone" className="mb-1 block text-sm font-medium">
+        <label htmlFor="phone" className="mb-2 block text-sm font-semibold text-gray-700">
           Phone number <span className="text-red-600">*</span>
         </label>
         <input
@@ -192,7 +192,7 @@ export default function EmployeeProfileForm() {
       </div>
  
       <div>
-        <label htmlFor="bio" className="mb-1 block text-sm font-medium">
+        <label htmlFor="bio" className="mb-2 block text-sm font-semibold text-gray-700">
           Bio
         </label>
         <textarea
@@ -206,7 +206,7 @@ export default function EmployeeProfileForm() {
       </div>
  
       <div>
-        <label htmlFor="booksyUrl" className="mb-1 block text-sm font-medium">
+        <label htmlFor="booksyUrl" className="mb-2 block text-sm font-semibold text-gray-700">
           Booksy widget link
         </label>
         <input
@@ -239,11 +239,10 @@ export default function EmployeeProfileForm() {
       <button
         type="submit"
         disabled={saving}
-        className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+        className="w-full rounded-full bg-black px-6 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {saving ? "Saving..." : "Save changes"}
       </button>
     </form>
   );
 }
- 

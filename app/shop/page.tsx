@@ -1,3 +1,4 @@
+
 'use client'
 import Footer from "@/components/footer"
 import Header from "@/components/header"
@@ -32,14 +33,8 @@ function Page() {
       <Header />
  
       {/* title */}
-      <section className="bg-black text-white py-20 px-6 text-center">
-        <p className="uppercase tracking-[0.3em] text-sm text-gray-400 mb-3">
-          Kaizen Cutz
-        </p>
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">Shop</h1>
-        <p className="text-gray-300 max-w-xl mx-auto">
-          Official Kaizen Cutz merch. Rep the shop.
-        </p>
+      <section className="bg-black text-white py-14 md:py-16 px-6 text-center">
+        <h1 className="text-4xl md:text-6xl font-extrabold uppercase tracking-widest">Shop</h1>
       </section>
  
       <main className="flex-1 max-w-300 mx-auto w-full px-6 py-16 text-left">
@@ -63,10 +58,6 @@ function Page() {
           </div>
         ) : (
           <>
-            <p className="text-sm text-gray-500 mb-6">
-              {items.length} product{items.length !== 1 ? "s" : ""}
-            </p>
- 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {items.map((item) => (
                 <Link href={`/shop/${item.id}`} key={item.id} className="group">
@@ -109,3 +100,5 @@ function Page() {
 }
  
 export default Page
+
+
