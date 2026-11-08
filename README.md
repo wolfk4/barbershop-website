@@ -52,6 +52,9 @@ Possible use:
 
 > This route should typically be protected with authentication and authorization.
 
+Admins can update an employee's login email and optionally set a new password
+from the employee list. Leaving the password blank keeps the existing password.
+
 ---
 
 ### `/api`
