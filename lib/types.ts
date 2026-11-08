@@ -2,7 +2,7 @@
 export type ShopItem = {
   id: string;
   title: string;
-  image: string;
+  image: string | null;
   price: number;
   description: string;
   moreInfo: string;
