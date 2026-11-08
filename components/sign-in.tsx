@@ -1,20 +1,21 @@
-'use client'
 
+'use client'
+ 
 import { useState } from "react"
 import { submitEmployeeLogin } from "@/app/login/actions"
 import PasswordResetLink from "@/components/PasswordResetLink"
-
+ 
 export function SignIn() {
   const [usernameError, setUsernameError] = useState("")
   const [passwordError, setPasswordError] = useState("")
-
+ 
   return (
     <form
-      className="mx-auto w-full max-w-sm space-y-5 rounded-xl border border-gray-200 bg-white p-6"
+      className="mx-auto w-full max-w-sm space-y-5 rounded-2xl bg-white p-8 shadow-2xl"
       action={submitEmployeeLogin}
     >
-      <h1 className="text-2xl font-semibold text-gray-900">Employee Login</h1>
-
+      <h1 className="text-center text-2xl font-extrabold uppercase tracking-widest text-black">Employee Login</h1>
+ 
       <div className="space-y-2">
         <label htmlFor="username" className="block text-sm font-medium text-gray-700">
           Username
@@ -29,7 +30,7 @@ export function SignIn() {
           onChange={() => setUsernameError("")}
           aria-invalid={Boolean(usernameError)}
           aria-describedby={usernameError ? "username-error" : undefined}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-black focus:ring-1 focus:ring-black"
         />
         {usernameError ? (
           <p id="username-error" className="text-sm text-red-600" role="alert">
@@ -37,7 +38,7 @@ export function SignIn() {
           </p>
         ) : null}
       </div>
-
+ 
       <div className="space-y-2">
         <label htmlFor="password" className="block text-sm font-medium text-gray-700">
           Password
@@ -52,7 +53,7 @@ export function SignIn() {
           onChange={() => setPasswordError("")}
           aria-invalid={Boolean(passwordError)}
           aria-describedby={passwordError ? "password-error" : undefined}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-black focus:ring-1 focus:ring-black"
         />
         {passwordError ? (
           <p id="password-error" className="text-sm text-red-600" role="alert">
@@ -60,15 +61,15 @@ export function SignIn() {
           </p>
         ) : null}
       </div>
-
+ 
       <button
         type="submit"
-        className="w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+        className="w-full rounded-full bg-black px-4 py-3 font-bold uppercase tracking-wide text-white transition hover:bg-gray-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
       >
         Sign In
       </button>
-
-      <PasswordResetLink />
+ 
+      <PasswordResetLink className="text-sm text-gray-500 transition hover:text-black hover:underline" />
     </form>
   );
 }
