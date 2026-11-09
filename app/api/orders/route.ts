@@ -8,19 +8,40 @@ import { sendOrderConfirmation } from "@/lib/email";
 const CART_USER_ID = "7f3c2a91-5d84-4e17-9b63-2c8a6f104d75";
  
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_REGEX = /^\d{10}$/;
+const ZIP_REGEX = /^\d{5}$/;
+const STATE_REGEX = /^[A-Z]{2}$/;
+
+const str = (value: unknown) => (typeof value === "string" ? value.trim() : "");
  
 export async function POST(request: Request) {
   try {
     const body = await request.json().catch(() => null);
-    const name = typeof body?.name === "string" ? body.name.trim() : "";
-    const email = typeof body?.email === "string" ? body.email.trim() : "";
+    const firstName = str(body?.firstName).slice(0, 100);
+    const lastName = str(body?.lastName).slice(0, 100);
+    const email = str(body?.email);
+    const phone = str(body?.phone);
+    const street = str(body?.shipping?.streetAddress).slice(0, 255);
+    const city = str(body?.shipping?.city).slice(0, 100);
+    const state = str(body?.shipping?.state).toUpperCase();
+    const zip = str(body?.shipping?.zipCode);
  
-    if (!name || !EMAIL_REGEX.test(email)) {
+    if (
+      !firstName ||
+      !lastName ||
+      !EMAIL_REGEX.test(email) ||
+      !PHONE_REGEX.test(phone) ||
+      !street ||
+      !city ||
+      !STATE_REGEX.test(state) ||
+      !ZIP_REGEX.test(zip)
+    ) {
       return Response.json(
-        { error: "Name and a valid email are required" },
+        { error: "Name, valid email, phone, and shipping address are required" },
         { status: 400 }
       );
     }
+    const name = `${firstName} ${lastName}`;
  
     // get items + prices from the db instead of trusting what the browser sends
     const items = await db
@@ -46,11 +67,18 @@ export async function POST(request: Request) {
     await db.batch([
       db.insert(orders).values({
         id: orderId,
-        customerName: name,
+        customerFirstName: firstName,
+        customerLastName: lastName,
         customerEmail: email,
+        customerPhone: phone,
+        shippingStreet: street,
+        shippingCity: city,
+        shippingState: state,
+        shippingZip: zip,
         total,
       }),
-      db.insert(orderItems).values(items.map((item) => ({ orderId, ...item }))),
+      // inner join above means productId is never null here
+      db.insert(orderItems).values(items.map((item) => ({ orderId, ...item, productId: item.productId! }))),
       db.delete(cart).where(eq(cart.userId, CART_USER_ID)),
     ]);
  

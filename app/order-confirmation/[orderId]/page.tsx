@@ -42,7 +42,7 @@ async function Page({ params }: { params: Promise<{ orderId: string }> }) {
       <main className="flex-1 max-w-3xl mx-auto w-full px-6 py-12">
         <div className="bg-white border rounded-2xl p-8 shadow-sm">
           <h2 className="text-3xl font-bold mb-2">
-            Thanks, {order.customerName}!
+            Thanks, {order.customerFirstName}!
           </h2>
  
           <p className="text-gray-600 mb-1">
