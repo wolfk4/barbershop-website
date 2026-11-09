@@ -32,6 +32,9 @@ export async function POST(req: Request) {
     }
 
     const safeName = customerName.trim().slice(0, 120)
+    // this form only has one name box, so split it on the first space
+    const [firstName, ...rest] = safeName.split(/\s+/)
+    const lastName = rest.join(" ")
     const [p] = await db.select().from(shopItems).where(eq(shopItems.title, title)).limit(1)
     if (!p) return NextResponse.json({ error: "Product not found" }, { status: 404 })
 
@@ -51,7 +54,8 @@ export async function POST(req: Request) {
     })
 
     await db.insert(orders).values({
-      customerName: safeName,
+      customerFirstName: firstName.slice(0, 100),
+      customerLastName: lastName.slice(0, 100),
       customerEmail: "test@email.com",
       total: p.price,
       status: "pending",

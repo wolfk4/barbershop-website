@@ -31,10 +31,9 @@ export async function GET() {
  
     const result = allOrders.map((order) => ({
       id: order.id,
-      customerName: order.customerName,
+      customerName: `${order.customerFirstName} ${order.customerLastName}`.trim(),
       total: order.total,
-      // older orders were saved as "placed", which means the same thing as pending
-      status: order.status === "placed" ? "pending" : order.status,
+      status: order.status,
       createdAt: order.createdAt,
       items: items
         .filter((item) => item.orderId === order.id)

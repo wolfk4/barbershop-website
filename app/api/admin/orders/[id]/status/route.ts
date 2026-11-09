@@ -1,9 +1,10 @@
 import { auth } from "@/auth";
 import { db } from "@/db/drizzle";
-import { orders } from "@/db/schema";
+import { orders, orderStatus } from "@/db/schema";
 import { eq } from "drizzle-orm";
  
-const STATUSES = ["pending", "processing", "shipped", "delivered", "cancelled"];
+const STATUSES = orderStatus.enumValues;
+type OrderStatus = (typeof STATUSES)[number];
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
  
 export async function PUT(
@@ -26,13 +27,13 @@ export async function PUT(
  
     const body = await request.json().catch(() => null);
     const status = typeof body?.status === "string" ? body.status : "";
-    if (!STATUSES.includes(status)) {
+    if (!STATUSES.includes(status as OrderStatus)) {
       return Response.json({ error: "Invalid status." }, { status: 400 });
     }
  
     const [updated] = await db
       .update(orders)
-      .set({ status })
+      .set({ status: status as OrderStatus })
       .where(eq(orders.id, id))
       .returning({ id: orders.id, status: orders.status });
  

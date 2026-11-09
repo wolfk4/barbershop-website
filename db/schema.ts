@@ -1,4 +1,4 @@
-import { index, integer, pgTable, serial, smallint, text, timestamp, uniqueIndex, varchar, uuid } from "drizzle-orm/pg-core";
+import { index, integer, pgEnum, pgTable, serial, smallint, text, timestamp, uniqueIndex, varchar, uuid } from "drizzle-orm/pg-core";
 
 
 
@@ -80,12 +80,28 @@ export const cart = pgTable("cart", {
   addedAt: timestamp("added_at").defaultNow().notNull(),
 });
 
+export const orderStatus = pgEnum("order_status", [
+  "pending",
+  "processing",
+  "shipped",
+  "delivered",
+  "cancelled",
+]);
+
 export const orders = pgTable("orders", {
   id: uuid("id").defaultRandom().primaryKey(),
-  customerName: varchar("customer_name", { length: 255 }).notNull(),
+  customerFirstName: varchar("customer_first_name", { length: 100 }).notNull(),
+  customerLastName: varchar("customer_last_name", { length: 100 }).notNull(),
   customerEmail: varchar("customer_email", { length: 255 }).notNull(),
+  customerPhone: varchar("customer_phone", { length: 20 }),
+  // shipping address, nullable so older orders without one still work
+  shippingStreet: varchar("shipping_street", { length: 255 }),
+  shippingCity: varchar("shipping_city", { length: 100 }),
+  shippingState: varchar("shipping_state", { length: 2 }),
+  shippingZip: varchar("shipping_zip", { length: 10 }),
+  // stored in cents so we don't get rounding issues
   total: integer("total").notNull(),
-  status: varchar("status", { length: 20 }).default("placed").notNull(),
+  status: orderStatus("status").default("pending").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   stripeCheckoutSessionId: varchar("stripe_checkout_session_id", { length: 255 }),
 });
@@ -93,7 +109,8 @@ export const orders = pgTable("orders", {
 export const orderItems = pgTable("order_items", {
   id: uuid("id").defaultRandom().primaryKey(),
   orderId: uuid("order_id").references(() => orders.id, { onDelete: "cascade" }).notNull(),
-  productId: uuid("product_id").references(() => shopItems.id, { onDelete: "set null" }),
+  productId: uuid("product_id").references(() => shopItems.id).notNull(),
+  // title and price are copied at order time so old orders don't change if the product does
   title: varchar("title", { length: 255 }).notNull(),
   price: integer("price").notNull(),
   size: varchar("size", { length: 10 }),
