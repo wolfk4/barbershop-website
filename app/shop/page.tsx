@@ -62,11 +62,11 @@ function Page() {
               {items.map((item) => (
                 <Link href={`/shop/${item.id}`} key={item.id} className="group">
                   <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 border group-hover:border-black transition">
-                    <img
+                    {item.image && <img
                       src={item.image}
                       alt={item.title}
                       className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
-                    />
+                    />}
                     <span className="absolute bottom-4 left-1/2 -translate-x-1/2 translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition bg-white text-black text-xs font-bold uppercase tracking-wide px-5 py-2 rounded-full whitespace-nowrap">
                       View Product
                     </span>

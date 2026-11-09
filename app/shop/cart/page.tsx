@@ -99,11 +99,11 @@ function Page() {
                   className="flex flex-col sm:flex-row gap-5 border rounded-2xl p-5 hover:border-black hover:shadow-md transition"
                 >
                   <Link href={`/shop/${item.productId}`} className="shrink-0">
-                    <img
-                      src={item.image ?? ""}
+                    {item.image && <img
+                      src={item.image}
                       alt={item.title}
                       className="w-full sm:w-36 h-36 object-cover rounded-xl bg-gray-100"
-                    />
+                    />}
                   </Link>
  
                   <div className="flex-1 flex flex-col">

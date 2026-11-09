@@ -1,6 +1,7 @@
 import { db } from "@/db/drizzle";
 import { productBySize, shopItems } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
+import { productImageUrl } from "@/lib/product-images";
 
 export async function GET(
   _request: Request,
@@ -20,7 +21,7 @@ export async function GET(
     .where(eq(productBySize.productId, product.id));
 
   // Return the product along with its sizes and stock
-  return Response.json({...product, sizes: sizes.map((variant) => ({
+  return Response.json({...product, image: productImageUrl(product.id, product.image), sizes: sizes.map((variant) => ({
       size: variant.size,
       stock: Number(variant.stock ?? 0),
     })),

@@ -78,14 +78,14 @@ export default function ProductPage() {
           <div className="grid gap-10 md:grid-cols-2 md:gap-16">
             {/* image */}
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 border">
-              <Image
+              {item.image && <Image
                 src={item.image}
                 alt={item.title}
                 fill
                 sizes="(min-width: 768px) 50vw, 100vw"
                 className="object-cover"
                 priority
-              />
+              />}
             </div>
  
             {/* details */}
