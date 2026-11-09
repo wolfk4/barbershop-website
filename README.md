@@ -52,19 +52,8 @@ Possible use:
 
 > This route should typically be protected with authentication and authorization.
 
-Admins can edit existing products at `/admin/products`: select **Edit** to update
-the product details, sizes, stock, or image. Prices are entered in dollars and
-stored in cents. Leaving the image field empty keeps the existing image;
-replacement images use the existing object storage. Changing a product price
-does not update its separate Stripe checkout price.
-Deleting a product permanently removes its product, size, and cart records.
-Past order details remain, but no longer link to the deleted product. Apply the
-product-deletion database migration before using this feature.
-
-Uploaded product images are served through `/api/products/[id]/image` using
-server-side object storage credentials. Existing external image URLs remain
-unchanged. Set `AWS_ENDPOINT_URL_S3`, `PORTFOLIO_BUCKET`, `AWS_REGION`,
-`AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` for uploaded images to work.
+Admins can update an employee's login email and optionally set a new password
+from the employee list. Leaving the password blank keeps the existing password.
 
 ---
 

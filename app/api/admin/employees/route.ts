@@ -1,11 +1,9 @@
 import { auth } from "@/auth";
 import { db } from "@/db/drizzle";
 import { usersTable } from "@/db/schema";
-import { sqlInjectCheck } from "@/lib/sql-inject-check";
+import { isValidEmployeeEmail } from "@/lib/employee-validation";
 import { asc, eq, sql } from "drizzle-orm";
 import { hash } from "bcryptjs";
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function GET() {
   try {
@@ -55,7 +53,7 @@ export async function POST(request: Request) {
     if (!name || name.length > 255 || !email || email.length > 255 || !password) {
       return Response.json({ error: "Name, email, and password are required" }, { status: 400 });
     }
-    if (!sqlInjectCheck(email) || !EMAIL_PATTERN.test(email)) {
+    if (!isValidEmployeeEmail(email)) {
       return Response.json({ error: "Invalid email" }, { status: 400 });
     }
 

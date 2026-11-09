@@ -9,7 +9,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 /**
  * EmployeeList component displays a list of employees in a card.
  * Fetches employee data from the server and handles loading, error, and empty states.
- * Routing needs to be implemented for updating employee details. (DT-122)
  */
 
 type Employee = {
@@ -62,7 +61,6 @@ export function EmployeeList() {
               <p className="font-medium">{employee.name}</p>
               <p className="text-sm text-muted-foreground">{employee.email}</p>
             </div>
-            {/* TODO: /admin/employees/[id] is the Update Employee page (DT-122). */}
             <Button asChild variant="outline" size="sm">
               <Link href={`/admin/employees/${employee.id}`}>Update</Link>
             </Button>
