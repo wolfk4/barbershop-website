@@ -1,6 +1,7 @@
 import { db } from "@/db/drizzle";
 import { cart, shopItems } from "@/db/schema"; 
 import { and, eq } from "drizzle-orm";  
+import { productImageUrl } from "@/lib/product-images";
 
 const userId = "7f3c2a91-5d84-4e17-9b63-2c8a6f104d75";
 const maxPurchaseQuantity = 10;
@@ -39,7 +40,10 @@ export async function GET()
       .from(cart)
       .innerJoin(shopItems, eq(cart.productId, shopItems.id));
 
-    return Response.json(items); 
+    return Response.json(items.map((item) => ({
+      ...item,
+      image: productImageUrl(item.id, item.image),
+    })));
   } catch (error) {
     console.error("Failed to fetch cart items:", error);
 

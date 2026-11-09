@@ -10,7 +10,7 @@ export function DeleteProductButton({ id }: { id: string }) {
   const [deleting, setDeleting] = React.useState(false)
 
   async function handleDelete() {
-    if (!window.confirm("Are you sure you want to delete this product?")) return
+    if (!window.confirm("Permanently delete this product? Past order details will be preserved.")) return
 
     setDeleting(true)
     try {

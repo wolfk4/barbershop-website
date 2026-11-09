@@ -14,6 +14,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { DeleteProductButton } from "../components/delete-product-button"
+import { Button } from "@/components/ui/button"
+import { productImageUrl } from "@/lib/product-images"
  
 async function page() {
   const session = await auth()
@@ -42,7 +44,7 @@ async function page() {
           <Card className="w-full mt-4">
             <CardHeader>
               <CardTitle>Products</CardTitle>
-              <CardDescription>Delete products from the shop.</CardDescription>
+              <CardDescription>Edit or delete products from the shop.</CardDescription>
             </CardHeader>
  
             <CardContent>
@@ -51,10 +53,10 @@ async function page() {
               ) : (
                 <ul className="divide-y">
                   {products.map((product) => (
-                    <li key={product.id} className="flex items-center gap-4 py-3">
+                    <li key={product.id} className="flex flex-wrap items-center gap-4 py-3">
                       {product.image ? (
                         <img
-                          src={product.image}
+                          src={productImageUrl(product.id, product.image) ?? ""}
                           alt={product.title}
                           className="size-14 rounded-md object-cover"
                         />
@@ -64,9 +66,12 @@ async function page() {
  
                       <div className="flex-1">
                         <p className="font-medium">{product.title}</p>
-                        <p className="text-sm text-gray-500">${product.price.toFixed(2)}</p>
+                        <p className="text-sm text-gray-500">${(product.price / 100).toFixed(2)}</p>
                       </div>
  
+                      <Button asChild variant="outline" size="sm">
+                        <Link href={`/admin/products/${product.id}/edit`} aria-label={`Edit ${product.title}`}>Edit</Link>
+                      </Button>
                       <DeleteProductButton id={product.id} />
                     </li>
                   ))}

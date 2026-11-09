@@ -3,16 +3,18 @@
 import { db } from "@/db/drizzle";
 import { shopItems } from "@/db/schema";
 import { isNull } from "drizzle-orm";
-const items = await db.select().from(shopItems).where(isNull(shopItems.deletedAt));
-
-
+import { productImageUrl } from "@/lib/product-images";
 export async function GET() {
     try {
         const items = await db
             .select()
-            .from(shopItems);
+            .from(shopItems)
+            .where(isNull(shopItems.deletedAt));
 
-        return Response.json(items);
+        return Response.json(items.map((item) => ({
+            ...item,
+            image: productImageUrl(item.id, item.image),
+        })));
     } catch (error) {
         console.error("Failed to fetch shop items:", error);
 
