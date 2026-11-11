@@ -19,22 +19,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing title" }, { status: 400 })
     }
 
-    const customerName = formData.get("customer_name")
+    const field = (name: string) => {
+      const value = formData.get(name)
+      return typeof value === "string" ? value.trim() : ""
+    }
+    const firstName = field("firstName").slice(0, 100)
+    const lastName = field("lastName").slice(0, 100)
+    const email = field("email")
+    const phone = field("phone")
+    const streetAddress = field("streetAddress").slice(0, 255)
+    const city = field("city").slice(0, 100)
+    const state = field("state")
+    const zipCode = field("zipCode")
 
     if (
-      typeof customerName !== "string" ||
-      customerName.trim().length < 2
+      !firstName || !lastName ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 255 ||
+      !/^\d{10}$/.test(phone) || !streetAddress || !city ||
+      !/^[A-Z]{2}$/.test(state) || !/^\d{5}$/.test(zipCode)
     ) {
       return NextResponse.json(
-        { error: "Customer name must be at least 2 characters" },
+        { error: "Name, valid email, phone, and shipping address are required" },
         { status: 400 }
       )
     }
 
-    const safeName = customerName.trim().slice(0, 120)
-    // this form only has one name box, so split it on the first space
-    const [firstName, ...rest] = safeName.split(/\s+/)
-    const lastName = rest.join(" ")
     const [p] = await db.select().from(shopItems).where(eq(shopItems.title, title)).limit(1)
     if (!p) return NextResponse.json({ error: "Product not found" }, { status: 404 })
 
@@ -43,10 +52,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing stripe id for product" }, { status: 400 })
     }
 
+    const orderId = crypto.randomUUID()
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      customer_email: email,
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${origin}/check/success`,
+      success_url: `${origin}/order-confirmation/${orderId}`,
       cancel_url: `${origin}/shop/${p.id}`,
         managed_payments: {
         enabled: false,
@@ -54,9 +65,15 @@ export async function POST(req: Request) {
     })
 
     await db.insert(orders).values({
+      id: orderId,
       customerFirstName: firstName.slice(0, 100),
       customerLastName: lastName.slice(0, 100),
-      customerEmail: "test@email.com",
+      customerEmail: email,
+      customerPhone: phone,
+      shippingStreet: streetAddress,
+      shippingCity: city,
+      shippingState: state,
+      shippingZip: zipCode,
       total: p.price,
       status: "pending",
       stripeCheckoutSessionId: session.id,
