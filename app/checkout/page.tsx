@@ -2,12 +2,12 @@
  
 import { FormEvent, useEffect, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Lock, ShoppingBag } from "lucide-react"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
 import { CartItem } from "@/lib/types"
+import { Button } from "@/components/ui/button"
  
 type CheckoutForm = {
   firstName: string
@@ -69,6 +69,7 @@ function validate(values: CheckoutForm): FormErrors {
  
   return errors
 }
+
  
 // label + input + error message
 function Field({
@@ -113,8 +114,6 @@ function SectionTitle({ step, title }: { step: number; title: string }) {
 }
  
 export default function CheckoutPage() {
-  const router = useRouter()
- 
   const [items, setItems] = useState<CartItem[]>([])
   const [loading, setLoading] = useState(true)
   const [placingOrder, setPlacingOrder] = useState(false)
@@ -164,53 +163,21 @@ export default function CheckoutPage() {
     "aria-describedby": errors[name] ? `${name}-error` : undefined,
   })
  
-  const placeOrder = async (event: FormEvent<HTMLFormElement>) => {
+  const checkoutWithStripe = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (placingOrder) return
- 
+
     const nextErrors = validate(form)
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length > 0) {
       toast.error("Please fix the highlighted fields.")
       return
     }
- 
+
+    // Submit before disabling the inputs so all customer details are included.
+    event.currentTarget.submit()
     setPlacingOrder(true)
- 
-    try {
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName: form.firstName,
-          lastName: form.lastName,
-          email: form.email,
-          phone: form.phone,
-          shipping: {
-            streetAddress: form.streetAddress,
-            city: form.city,
-            state: form.state,
-            zipCode: form.zipCode,
-          },
-        }),
-      })
- 
-      if (!response.ok) throw new Error("Order failed")
- 
-      const data = await response.json()
-      toast.success("Order placed! Check your email for confirmation.")
- 
-      // wait a sec so they can see the popup before we redirect
-      setTimeout(() => {
-        router.push(`/order-confirmation/${data.orderId}`)
-      }, 1500)
-    } catch (error) {
-      console.error("Failed to place order:", error)
-      toast.error("Order failed. Please check your details and try again.")
-      setPlacingOrder(false)
-    }
   }
- 
   const isEmpty = !loading && items.length === 0
  
   return (
@@ -252,10 +219,13 @@ export default function CheckoutPage() {
           </div>
         ) : (
           <form
-            onSubmit={placeOrder}
+            action="/api/stripe/checkout"
+            method="POST"
+            onSubmit={checkoutWithStripe}
             noValidate
             className="grid gap-10 lg:grid-cols-3"
           >
+            <input type="hidden" name="title" value="Hoodie" />
             <div className="lg:col-span-2 space-y-6">
               {/* contact info */}
               <section className="border rounded-2xl p-6 md:p-8">
@@ -373,19 +343,19 @@ export default function CheckoutPage() {
                   </div>
                 </div>
  
-                <div className="flex justify-between items-center bg-black text-white rounded-xl px-4 py-4 mt-5">
+                <div className="flex justify-between items-center text-black rounded-xl py-4 mt-5">
                   <span className="font-semibold">Total</span>
                   <span className="text-2xl font-bold">${total.toFixed(2)}</span>
                 </div>
  
-                <button
+                <Button
+                  className="mt-6 w-full bg-black text-white hover:bg-gray-800 py-4"
                   type="submit"
                   disabled={placingOrder}
-                  className="w-full mt-6 bg-black text-white font-bold uppercase tracking-wide py-4 rounded-full hover:bg-gray-800 transition disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {placingOrder ? "Placing Order..." : "Place Order"}
-                </button>
- 
+                  {placingOrder ? "Redirecting to Stripe..." : "Place Order"}
+                </Button>
+
                 <p className="flex items-center justify-center gap-1 text-xs text-gray-500 mt-4">
                   <Lock className="w-3 h-3" /> Secure checkout
                 </p>
