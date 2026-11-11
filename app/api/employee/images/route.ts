@@ -6,6 +6,7 @@ import { barbers, portfolioImages } from "@/db/schema";
 import { s3, portfolioBucket } from "@/lib/s3-client";
 import { PORTFOLIO_SLOT_COUNT } from "@/lib/portfolio";
 import { and, asc, eq, isNotNull } from "drizzle-orm";
+import { resolveImageUrl } from "@/lib/image-url";
 
 const maxBytes = 5 * 1024 * 1024;
 const allowedTypes = {
@@ -59,8 +60,7 @@ export async function GET() {
     );
 
     return Response.json(
-      { heroImage: barber?.heroImage ?? null, images: imagesWithUrls },
-      { headers: { "Cache-Control": "private, no-store" } },
+    { heroImage: await resolveImageUrl(barber?.heroImage ?? null), images: imagesWithUrls },      { headers: { "Cache-Control": "private, no-store" } },
     );
   } catch (error) {
     console.error("Failed to fetch portfolio images:", error);
