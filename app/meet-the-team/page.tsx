@@ -1,5 +1,3 @@
-
-
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowRight, Scissors } from "lucide-react"
@@ -7,14 +5,15 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { db } from "@/db/drizzle"
 import { barbers } from "@/db/schema"
- 
+import { resolveImageUrl } from "@/lib/image-url"
+
 export const metadata = {
   title: "Meet the Team | Kaizen Cutz",
 }
- 
+
 // re-check the database each request so new barbers show up right away
 export const dynamic = "force-dynamic"
- 
+
 function getInitials(name: string) {
   return name
     .split(" ")
@@ -23,22 +22,27 @@ function getInitials(name: string) {
     .slice(0, 2)
     .toUpperCase()
 }
- 
+
 export default async function MeetTheTeamPage() {
   // TODO: SHIFT TO API
-  const barberList = await db.select().from(barbers)
- 
+  const rows = await db.select().from(barbers)
+
+  // turn bucket paths into signed links so private images can load
+  const barberList = await Promise.all(
+    rows.map(async (barber) => ({ ...barber, image: await resolveImageUrl(barber.image) })),
+  )
+
   return (
     <div className="flex min-h-screen flex-col bg-white font-sans text-black">
       <Header />
- 
+
       {/* title - uppercase + wide spacing to match the home page and logo */}
       <section className="bg-black px-6 py-14 text-center text-white md:py-16">
         <h1 className="text-4xl font-extrabold uppercase tracking-widest md:text-6xl">
           Meet the Team
         </h1>
       </section>
- 
+
       <main className="mx-auto w-full max-w-300 flex-1 px-6 py-16">
         {barberList.length === 0 ? (
           <div className="rounded-2xl border px-6 py-20 text-center">
@@ -63,6 +67,7 @@ export default async function MeetTheTeamPage() {
                     src={barber.image}
                     alt={barber.name}
                     fill
+                    unoptimized
                     sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                     className="object-cover grayscale transition duration-500 group-hover:scale-105 group-hover:grayscale-0"
                   />
@@ -80,11 +85,10 @@ export default async function MeetTheTeamPage() {
                     </span>
                   </div>
                 )}
- 
- 
+
                 {/* dark fade so the text is readable on any photo */}
                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/90 via-black/50 to-transparent" />
- 
+
                 {/* name + info */}
                 <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                   <h2 className="text-xl font-extrabold uppercase tracking-wider">
@@ -105,7 +109,7 @@ export default async function MeetTheTeamPage() {
           </div>
         )}
       </main>
- 
+
       {/* booking CTA */}
       <section className="bg-black px-6 py-16 text-center text-white">
         <h2 className="mb-3 text-3xl font-bold md:text-4xl">Ready for a fresh cut?</h2>
@@ -119,9 +123,8 @@ export default async function MeetTheTeamPage() {
           Book Now
         </Link>
       </section>
- 
+
       <Footer />
     </div>
   )
 }
-

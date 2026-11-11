@@ -48,6 +48,7 @@ export default function EmployeePortfolioManager() {
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [status, setStatus] = useState<Status>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const profileInputRef = useRef<HTMLInputElement>(null);
  
   useEffect(() => {
     let cancelled = false;
@@ -118,6 +119,38 @@ export default function EmployeePortfolioManager() {
       setUploading(false);
     }
   }
+
+  async function handleProfileUpload(event: React.ChangeEvent<HTMLInputElement>) {
+  const file = event.target.files?.[0];
+  event.target.value = "";
+  if (!file) return;
+  if (!ALLOWED_IMAGE_TYPES.has(file.type) || file.size > MAX_FILE_SIZE) {
+    setStatus({ type: "error", text: "Use a JPG or PNG up to 5 MB." });
+    return;
+  }
+
+  setUploading(true);
+  setStatus(null);
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const response = await fetch("/api/employee/profile-image", { method: "POST", body: formData });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error ?? "Couldn't upload this image.");
+    const portfolio = await fetchPortfolioData();
+    setHeroImage(portfolio.heroImage);
+    setStatus({ type: "success", text: "Profile photo updated." });
+  } catch (error) {
+    setStatus({
+      type: "error",
+      text: error instanceof Error ? error.message : "Couldn't upload this image.",
+    });
+  } finally {
+    setUploading(false);
+  }
+}
+
  
   const slots = Array.from(
     { length: PORTFOLIO_SLOT_COUNT },
@@ -176,6 +209,23 @@ export default function EmployeePortfolioManager() {
             <p className="mt-1 text-sm text-gray-500">
               {heroImage ? "This is what customers see on your page." : "No profile photo linked yet."}
             </p>
+            <input
+  ref={profileInputRef}
+  type="file"
+  accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+  onChange={handleProfileUpload}
+  className="sr-only"
+  aria-label="Choose a profile photo"
+/>
+<button
+  type="button"
+  onClick={() => profileInputRef.current?.click()}
+  disabled={uploading}
+  className="mt-3 rounded-full border border-black px-4 py-2 text-xs font-bold uppercase tracking-wide hover:bg-black hover:text-white disabled:opacity-40"
+>
+  {uploading ? "Uploading..." : "Change photo"}
+</button>
+
           </div>
         </div>
  
