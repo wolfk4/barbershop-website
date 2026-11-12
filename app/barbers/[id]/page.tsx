@@ -1,4 +1,3 @@
-
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +11,7 @@ import { db } from "@/db/drizzle";
 import { barbers, portfolioImages } from "@/db/schema";
 import { portfolioBucket, s3 } from "@/lib/s3-client";
 import { PORTFOLIO_SLOT_COUNT } from "@/lib/portfolio";
+import { resolveImageUrl } from "@/lib/image-url";
 import { and, asc, eq, isNotNull } from "drizzle-orm";
  
 type BarberBioPageProps = {
@@ -34,6 +34,9 @@ export default async function BarberBioPage({ params }: BarberBioPageProps) {
  
   const [barber] = await db.select().from(barbers).where(eq(barbers.id, id)).limit(1);
   if (!barber) notFound();
+ 
+  // image is usually a bucket key like "profile/3/abc.jpg", so sign it first
+  const heroImage = await resolveImageUrl(barber.image);
  
   const images = barber.userId
     ? await db
@@ -70,11 +73,12 @@ export default async function BarberBioPage({ params }: BarberBioPageProps) {
  
           <div className="mt-10 grid items-center gap-10 md:grid-cols-[360px_1fr] md:gap-16">
             <div className="relative mx-auto aspect-4/5 w-full max-w-[360px] overflow-hidden rounded-2xl bg-black shadow-2xl ring-1 ring-white/10">
-              {barber.image ? (
+              {heroImage ? (
                 <Image
-                  src={barber.image}
+                  src={heroImage}
                   alt={barber.name}
                   fill
+                  unoptimized
                   sizes="360px"
                   className="object-cover object-top"
                 />
@@ -141,4 +145,4 @@ export default async function BarberBioPage({ params }: BarberBioPageProps) {
     </div>
   );
 }
-
+ 

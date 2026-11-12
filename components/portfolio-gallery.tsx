@@ -2,7 +2,7 @@
  
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Expand, X } from "lucide-react";
  
 type Props = {
   images: string[];
@@ -31,23 +31,28 @@ export default function PortfolioGallery({ images, barberName }: Props) {
  
   return (
     <>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      {/* 3 per row on desktop so 6 photos make 2 even rows, leftovers stay centered */}
+      <div className="mx-auto flex max-w-5xl flex-wrap justify-center gap-4 md:gap-6">
         {images.map((url, index) => (
           <button
             key={url}
             type="button"
             onClick={() => setOpenIndex(index)}
             aria-label={`View ${barberName}'s work ${index + 1}`}
-            className="group relative aspect-4/5 overflow-hidden rounded-xl bg-gray-100"
+            className="group relative aspect-4/5 w-[calc(50%-0.5rem)] overflow-hidden rounded-2xl bg-gray-100 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl md:w-[calc(33.333%-1rem)]"
           >
             <Image
               src={url}
               alt={`${barberName}'s work ${index + 1}`}
               fill
               unoptimized
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              sizes="(max-width: 768px) 50vw, 33vw"
               className="object-cover transition duration-500 group-hover:scale-105"
             />
+            {/* dark overlay + expand icon on hover */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition duration-300 group-hover:bg-black/40">
+              <Expand className="h-8 w-8 text-white opacity-0 transition duration-300 group-hover:opacity-100" />
+            </div>
           </button>
         ))}
       </div>
@@ -119,3 +124,4 @@ export default function PortfolioGallery({ images, barberName }: Props) {
     </>
   );
 }
+ 
