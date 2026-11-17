@@ -256,7 +256,21 @@ Run the Jest unit and API tests with:
 npm test
 ```
 
-The employee update API tests exercise the route and validation together while mocking authentication and the database; they do not make real database changes. End-to-end tests and system test reporting are still being planned.
+The employee update API tests exercise the route and validation together while mocking authentication and the database; they do not make real database changes.
+
+For Cypress end-to-end tests, install the project dependencies with `npm install`. Cypress 15 requires Node.js 20.1 or later in a supported release line (20, 22, or 24+). Start the app in one terminal:
+
+```bash
+npm run dev
+```
+
+In another terminal, open the Cypress test runner:
+
+```bash
+npm run cypress:open
+```
+
+Choose E2E Testing and a browser. Cypress tests go in `cypress/e2e/`; the scheduling test checks that the page displays the shop's Booksy link without making a booking. Run tests headlessly with `npm run cypress:run` while the app is running. Use test accounts, a safe test database, and Stripe test mode for flows that change data or involve payments.
 
 ## Deployment
  
