@@ -225,7 +225,6 @@ export default function CheckoutPage() {
             noValidate
             className="grid gap-10 lg:grid-cols-3"
           >
-            <input type="hidden" name="title" value="Hoodie" />
             <div className="lg:col-span-2 space-y-6">
               {/* contact info */}
               <section className="border rounded-2xl p-6 md:p-8">
