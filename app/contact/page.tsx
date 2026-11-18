@@ -1,6 +1,9 @@
+'use client'
 import Footer from "@/components/footer"
 import Header from "@/components/header"
-import { MapPin, Phone, Mail, Clock, ArrowUpRight } from "lucide-react"
+import { MapPin, Phone, Mail, Clock, Check } from "lucide-react"
+import Link from "next/link"
+import { useForm, ValidationError } from '@formspree/react';
 
 const ADDRESS = "5411 San Juan Ave, Citrus Heights, CA 95610"
 const PHONE = "(916) 844-7020"
@@ -8,6 +11,7 @@ const EMAIL = "info@barbershop.com" // Replace with the shop email
 
 export default function Page() {
   const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ADDRESS)}`
+  const [state, handleSubmit] = useForm("xoedwpdr");
 
   const inputClassName =
     "w-full rounded-none border border-gray-300 bg-white px-4 py-3 text-base placeholder:text-gray-400 focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
@@ -37,7 +41,7 @@ export default function Page() {
               href="tel:+19168447020"
               className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-black transition hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
-              <Phone size={16} aria-hidden="true" />
+              <Phone size={16} aria-hidden="true"/>
               Call Us
             </a>
           </div>
@@ -48,8 +52,9 @@ export default function Page() {
           <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-3 md:gap-10">
             <div className="flex items-start gap-4">
               <Clock
-                className="mt-1 shrink-0 text-gray-500"
-                size={22}
+                className="mt-1 shrink-0 text-gray-500 font-bold"
+                strokeWidth={3} 
+                size={24}
                 aria-hidden="true"
               />
 
@@ -66,7 +71,8 @@ export default function Page() {
             <div className="flex items-start gap-4">
               <MapPin
                 className="mt-1 shrink-0 text-gray-500"
-                size={22}
+                strokeWidth={3} 
+                size={24}
                 aria-hidden="true"
               />
 
@@ -88,7 +94,8 @@ export default function Page() {
             <div className="flex items-start gap-4">
               <Phone
                 className="mt-1 shrink-0 text-gray-500"
-                size={22}
+                strokeWidth={3} 
+                size={24}
                 aria-hidden="true"
               />
 
@@ -122,6 +129,22 @@ export default function Page() {
         <section className="bg-gray-100 px-6 py-12 sm:py-20">
           <div className="mx-auto grid max-w-6xl items-stretch gap-8 lg:grid-cols-2">
             <div className="p-6 sm:p-10">
+              {state.succeeded ? (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className="flex h-full min-h-80 flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white px-6 py-12 text-center sm:px-10"
+                >
+                  <span className="mb-6 flex h-8 w-8 items-center justify-center rounded-full bg-gray-950 text-white">
+                    <Check size={20} aria-hidden="true" />
+                  </span>
+                  <h2 className="text-3xl font-semibold tracking-tight">Thank you!</h2>
+                  <p className="mt-3 max-w-sm text-sm leading-6 text-gray-600">
+                    Your message has been submitted. We’ll be in touch soon.
+                  </p>
+                </div>
+              ) : (
+                <>
               <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
                 Send Us a Message
               </h2>
@@ -129,24 +152,30 @@ export default function Page() {
                 Have a question? Leave us a message below.
               </p>
 
-              {/* Connect this form to your submission handler. */}
-              <form className="mt-8 space-y-6">
+              <form className="mt-8 space-y-6"
+              onSubmit={handleSubmit}
+              >
                 <div>
                   <label
-                    htmlFor="contact-name"
+                    htmlFor="email"
                     className="mb-2 block text-sm font-medium"
                   >
-                    Name
+                    Email
                   </label>
                   <input
-                    id="contact-name"
-                    name="name"
-                    type="text"
-                    autoComplete="name"
-                    placeholder="Your name"
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="Email"
                     required
                     className={inputClassName}
                   />
+                <ValidationError 
+                prefix="name" 
+                field="name"
+                errors={state.errors}
+              />
                 </div>
 
                 <div>
@@ -164,15 +193,23 @@ export default function Page() {
                     required
                     className={`${inputClassName} block resize-y`}
                   />
+                                  <ValidationError 
+                prefix="name" 
+                field="name"
+                errors={state.errors}
+              />
                 </div>
 
                 <button
                   type="submit"
+                  disabled={state.submitting}
                   className="w-full rounded-xl bg-gray-950 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
                 >
                   Send Message
                 </button>
               </form>
+                </>
+              )}
             </div>
 
             <div className="flex overflow-hidden rounded-none border border-gray-200 bg-white flex-col">
