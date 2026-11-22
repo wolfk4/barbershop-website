@@ -250,7 +250,13 @@ Then open: http://localhost:3000
  
 ## Testing
  
-TODO — we'll be doing this in CSC 191. The plan is unit tests for the helper functions in `lib/`, integration tests for the API routes, and end-to-end tests for the booking and admin flows.
+Run the Jest unit and API tests with:
+
+```bash
+npm test
+```
+
+The employee update API tests exercise the route and validation together while mocking authentication and the database; they do not make real database changes. End-to-end tests and system test reporting are still being planned.
 
 ## Deployment
  
