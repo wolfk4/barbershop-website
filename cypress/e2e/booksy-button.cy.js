@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe("Scheduling page", () => {
+describe("Book with Booksy button", () => {
   it("shows a link to the shop's Booksy page", () => {
     cy.intercept("GET", "/api/shop/cart", { statusCode: 200, body: [] })
     cy.visit("/scheduling")

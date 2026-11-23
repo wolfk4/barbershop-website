@@ -269,8 +269,7 @@ In another terminal, open the Cypress test runner:
 ```bash
 npm run cypress:open
 ```
-
-Choose E2E Testing and a browser. Cypress tests go in `cypress/e2e/`; the scheduling test checks that the page displays the shop's Booksy link without making a booking. Run tests headlessly with `npm run cypress:run` while the app is running. Use test accounts, a safe test database, and Stripe test mode for flows that change data or involve payments.
+Choose E2E Testing and a browser. Cypress tests go in `cypress/e2e/`; they cover booking links, navigation, login validation, and unauthenticated admin access without making a booking or changing data. Run tests headlessly with `npm run cypress:run` while the app is running. If the app runs on another port, for example 3001, use `CYPRESS_BASE_URL=http://localhost:3001 npm run cypress:run`. Use test accounts, a safe test database, and Stripe test mode for flows that change data or involve payments.
 
 ## Deployment
  
